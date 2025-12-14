@@ -18,24 +18,10 @@ async function checkWeather(url) {
         } else {
             const data = await response.json();
             
-            // Basic Info
             document.querySelector(".city").innerHTML = data.name;
             document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
-            
-            // Extra Info Population
             document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
             document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
-            document.querySelector(".feels-like").innerHTML = Math.round(data.main.feels_like) + "°c";
-            document.querySelector(".pressure").innerHTML = data.main.pressure + " hPa";
-            
-            // Visibility (Convert meters to km)
-            const visibilityKm = data.visibility / 1000;
-            document.querySelector(".visibility").innerHTML = visibilityKm + " km";
-
-            // Sunrise (Convert Unix Timestamp)
-            const sunriseTime = new Date(data.sys.sunrise * 1000);
-            const sunriseString = sunriseTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            document.querySelector(".sunrise").innerHTML = sunriseString;
 
             // Update Icon
             const main = data.weather[0].main;
