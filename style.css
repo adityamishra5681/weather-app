@@ -78,6 +78,7 @@ body {
     flex: 1;
     margin-right: 16px;
     font-size: 18px;
+    text-transform: capitalize;
 }
 
 .search button {
@@ -176,3 +177,4 @@ body {
         height: 50px;
     }
 }
+
