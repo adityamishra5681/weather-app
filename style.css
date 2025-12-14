@@ -6,7 +6,7 @@
 }
 
 body {
-    background: #222;
+    background: #000;
     min-height: 100dvh;
     display: flex;
     flex-direction: column;
@@ -33,7 +33,7 @@ header {
     color: #fff;
     font-size: 26px;
     font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 /* Toggle Button */
@@ -51,8 +51,11 @@ header {
     transition: 0.3s;
 }
 #theme-toggle:hover { background: rgba(255, 255, 255, 0.4); }
-.toggle-icon { width: 24px; filter: invert(1); }
-.moon { display: none; } /* Hidden by default */
+
+/* Sun/Moon Icons */
+.toggle-icon { width: 26px; }
+.moon { display: none; filter: drop-shadow(0 0 2px rgba(255,255,255,0.5)); } /* Hidden by default */
+.sun { filter: drop-shadow(0 0 2px rgba(255,255,0,0.5)); }
 
 /* Video Backgrounds */
 .video-container {
@@ -65,7 +68,7 @@ header {
     width: 100%; height: 100%;
     object-fit: cover;
     position: absolute;
-    transition: opacity 0.8s ease;
+    transition: opacity 1s ease-in-out;
 }
 .light-video { opacity: 1; }
 .dark-video { opacity: 0; }
@@ -81,14 +84,14 @@ body.dark-mode .sun { display: none; }
     width: 90%;
     max-width: 470px;
     background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     color: #fff;
     border-radius: 20px;
     padding: 40px 35px;
     text-align: center;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
     margin-top: 50px;
 }
 
@@ -109,7 +112,7 @@ body.dark-mode .sun { display: none; }
     border-radius: 30px;
     flex: 1;
     font-size: 18px;
-    text-transform: capitalize; /* Auto-capitalize city names */
+    text-transform: capitalize;
 }
 
 .search button {
@@ -125,22 +128,29 @@ body.dark-mode .sun { display: none; }
     flex-shrink: 0;
 }
 .search button:hover { background: #d6fffa; transform: scale(1.05); }
-.search button img { width: 20px; }
+
+/* Force Icons to be Pure Black */
+.search button img { 
+    width: 22px; 
+    filter: brightness(0); /* Forces icon to black */
+    opacity: 1;
+}
 
 /* Weather Info */
 .weather-icon { width: 170px; margin-top: 30px; }
 .weather h1 { font-size: 80px; font-weight: 500; }
 .weather h2 { font-size: 45px; font-weight: 400; margin-top: -10px; }
+
 .details { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; margin-top: 50px; }
 .col { display: flex; align-items: center; text-align: left; }
-.col img { width: 40px; margin-right: 10px; filter: invert(1); }
+.col img { width: 40px; margin-right: 10px; filter: invert(1); } /* Keep weather icons white */
 
 .weather { display: none; }
 .error {
     text-align: left; margin-left: 10px; font-size: 14px;
     margin-top: 10px; color: #ffcccc;
     display: none; font-weight: bold;
-    background: rgba(255, 0, 0, 0.2);
+    background: rgba(255, 0, 0, 0.25);
     padding: 8px 12px; border-radius: 8px;
 }
 
