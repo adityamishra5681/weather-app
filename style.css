@@ -9,7 +9,6 @@
 .dark-mode {
     --text-color: #fff;
     --card-bg: rgba(0, 0, 0, 0.4);
-    /* Bright search bar for visibility in dark mode */
     --input-bg: rgba(255, 255, 255, 0.6); 
     --btn-bg: rgba(255, 255, 255, 0.2);
     --shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
@@ -52,33 +51,29 @@ nav {
 }
 .logo { font-size: 24px; font-weight: 600; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
-/* --- MODERN THEME TOGGLE (Updated) --- */
+/* --- Modern Theme Toggle --- */
 #theme-toggle {
-    background: transparent; /* No background box */
+    background: transparent;
     border: none;
     outline: none;
     color: #fff;
     width: 50px; 
     height: 50px; 
     cursor: pointer;
-    font-size: 28px; /* Larger icon */
+    font-size: 28px;
     display: flex; 
     align-items: center; 
     justify-content: center;
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy smooth spin */
-    text-shadow: 0 0 10px rgba(255,255,255,0.5); /* Subtle glow */
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
-/* Spin and scale up slightly on hover */
 #theme-toggle:hover {
     transform: rotate(90deg) scale(1.1);
 }
-
-/* Remove blue highlight on mobile tap */
 #theme-toggle:active {
     background: transparent;
 }
-
 
 /* --- Main Card --- */
 .container {
@@ -104,10 +99,12 @@ nav {
     background: var(--input-bg);
     color: var(--text-color);
     padding: 10px 20px; height: 50px; border-radius: 30px;
-    flex: 1; font-size: 16px; text-transform: capitalize;
+    flex: 1; font-size: 16px;
+    
+    /* UPDATED: This auto-capitalizes the first letter visually */
+    text-transform: capitalize;
 }
 
-/* Fix for dark text in bright bar */
 body.dark-mode .search input { color: #fff; font-weight: 500; }
 body.dark-mode .search input::placeholder { color: rgba(255,255,255,0.8); }
 
