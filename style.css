@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+/* Remove the @import line. We are loading fonts in HTML now. */
 
 * {
     margin: 0;
@@ -9,6 +9,7 @@
 
 body {
     background: #222;
+    /* This image is very large. The preload in HTML helps, but consider using a smaller image or WebP format for production */
     background-image: url('https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?q=80&w=2665&auto=format&fit=crop'); 
     background-size: cover;
     background-position: center;
@@ -17,6 +18,8 @@ body {
     align-items: center;
     height: 100vh;
 }
+
+/* ... Keep the rest of your CSS exactly the same ... */
 
 .card {
     width: 90%;
