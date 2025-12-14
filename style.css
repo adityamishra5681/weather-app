@@ -100,13 +100,19 @@ nav {
     color: var(--text-color);
     padding: 10px 20px; height: 50px; border-radius: 30px;
     flex: 1; font-size: 16px;
-    
-    /* UPDATED: This auto-capitalizes the first letter visually */
     text-transform: capitalize;
 }
 
-body.dark-mode .search input { color: #fff; font-weight: 500; }
-body.dark-mode .search input::placeholder { color: rgba(255,255,255,0.8); }
+/* UPDATED: Darker text for visibility in Dark Mode */
+body.dark-mode .search input { 
+    color: #333; /* Dark Grey Text */
+    font-weight: 500; 
+}
+
+/* UPDATED: Darker placeholder for visibility in Dark Mode */
+body.dark-mode .search input::placeholder { 
+    color: rgba(0, 0, 0, 0.6); 
+}
 
 .search button {
     border: 0; outline: 0; background: #fff; color: #000;
