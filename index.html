@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather App</title>
+    <title>Atmos Weather</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="dark-mode">
@@ -20,17 +21,29 @@
 
     <nav>
         <div class="logo"><i class="fa-solid fa-cloud-bolt"></i> Atmos</div>
-        <div class="nav-links">
-            <button id="theme-toggle"><i class="fa-solid fa-sun"></i></button>
-        </div>
+        <button id="theme-toggle" aria-label="Toggle Theme">
+            <i class="fa-solid fa-sun"></i>
+        </button>
     </nav>
 
     <div class="container">
         <div class="card">
             <div class="search">
-                <input type="text" placeholder="Enter city name" spellcheck="false">
-                <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-                <button id="location-btn"><i class="fa-solid fa-location-crosshairs"></i></button>
+                <input type="text" placeholder="Enter city name" spellcheck="false" list="city-suggestions" id="city-input">
+                
+                <datalist id="city-suggestions">
+                    <option value="Mumbai"><option value="Delhi"><option value="Bangalore">
+                    <option value="Hyderabad"><option value="Ahmedabad"><option value="Chennai">
+                    <option value="Kolkata"><option value="Pune"><option value="Jaipur">
+                    <option value="London"><option value="New York"><option value="Tokyo">
+                </datalist>
+
+                <button id="search-btn" aria-label="Search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <button id="location-btn" aria-label="Use My Location">
+                    <i class="fa-solid fa-location-crosshairs"></i>
+                </button>
             </div>
             
             <div class="error" style="display: none;">
@@ -38,7 +51,7 @@
             </div>
 
             <div class="weather" style="display: none;">
-                <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon">
+                <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon" alt="Weather Icon">
                 <h1 class="temp">--°c</h1>
                 <h2 class="city">City</h2>
                 <div class="details">
@@ -61,6 +74,6 @@
         </div>
     </div>
 
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
