@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Check live weather forecasts, humidity, and wind speed for any city with a beautiful dynamic background.">
-    <title>Weather Forecast</title>
+    <meta name="description" content="Atmos - Check live weather forecasts for any city or your current location.">
+    <title>Atmos Weather</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
     <script src="script.js" defer></script>
@@ -24,99 +24,53 @@
         </video>
     </div>
 
+    <header>
+        <div class="logo">Atmos</div>
+        <button id="theme-toggle" aria-label="Toggle Dark Mode">
+            <img src="https://cdn-icons-png.flaticon.com/512/169/169367.png" class="toggle-icon sun" alt="Light Mode">
+            <img src="https://cdn-icons-png.flaticon.com/512/7669/7669146.png" class="toggle-icon moon" alt="Dark Mode">
+        </button>
+    </header>
+
     <div class="card">
         <div class="search">
-            <input type="text" placeholder="Enter city name" spellcheck="false" list="city-suggestions" aria-label="Search City">
-            <button aria-label="Search"><img src="https://cdn-icons-png.flaticon.com/512/751/751463.png" alt="search icon"></button>
+            <input type="text" placeholder="Enter city name" spellcheck="false" list="city-suggestions" id="city-input">
             
-            <datalist id="city-suggestions">
-                <option value="Mumbai">
-                <option value="Delhi">
-                <option value="Bangalore">
-                <option value="Hyderabad">
-                <option value="Ahmedabad">
-                <option value="Chennai">
-                <option value="Kolkata">
-                <option value="Pune">
-                
-                <option value="Jaipur">
-                <option value="Lucknow">
-                <option value="Kanpur">
-                <option value="Chandigarh">
-                <option value="Ludhiana">
-                <option value="Agra">
-                <option value="Varanasi">
-                <option value="Amritsar">
-                <option value="Srinagar">
-                <option value="Dehradun">
-                <option value="Gurgaon">
-                <option value="Noida">
-                <option value="Ghaziabad">
-                <option value="Faridabad">
-                <option value="Shimla">
-                <option value="Manali">
-                
-                <option value="Surat">
-                <option value="Indore">
-                <option value="Nagpur">
-                <option value="Bhopal">
-                <option value="Vadodara">
-                <option value="Nashik">
-                <option value="Rajkot">
-                <option value="Thane">
-                <option value="Aurangabad">
-                <option value="Goa">
-                <option value="Udaipur">
-                <option value="Jodhpur">
-                <option value="Kota">
-                
-                <option value="Visakhapatnam">
-                <option value="Coimbatore">
-                <option value="Madurai">
-                <option value="Mysore">
-                <option value="Kochi">
-                <option value="Thiruvananthapuram">
-                <option value="Vijayawada">
-                <option value="Mangalore">
-                <option value="Tirupati">
-                
-                <option value="Patna">
-                <option value="Ranchi">
-                <option value="Bhubaneswar">
-                <option value="Guwahati">
-                <option value="Jamshedpur">
-                <option value="Darjeeling">
-                <option value="Shillong">
-                <option value="Gangtok">
-                <option value="Raipur">
+            <button id="location-btn" aria-label="Use My Location">
+                <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" alt="GPS Location">
+            </button>
+            
+            <button id="search-btn" aria-label="Search">
+                <img src="https://cdn-icons-png.flaticon.com/512/751/751463.png" alt="Search">
+            </button>
 
-                <option value="London">
-                <option value="New York">
-                <option value="Tokyo">
-                <option value="Paris">
-                <option value="Dubai">
-                <option value="Singapore">
-            </datalist>
+            <datalist id="city-suggestions">
+                <option value="Mumbai"><option value="Delhi"><option value="Bangalore">
+                <option value="Hyderabad"><option value="Ahmedabad"><option value="Chennai">
+                <option value="Kolkata"><option value="Pune"><option value="Jaipur">
+                <option value="Lucknow"><option value="London"><option value="New York">
+                <option value="Tokyo"><option value="Paris"><option value="Dubai">
+                </datalist>
         </div>
         
-        <div class="error" aria-live="polite">
+        <div class="error">
             <p>Invalid City Name!</p>
         </div>
 
         <div class="weather">
-            <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon" alt="Weather Condition">
+            <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon" alt="Weather Icon">
             <h1 class="temp">--°c</h1>
-            <h2 class="city">City</h2>
+            <h2 class="city">--</h2>
             <div class="details">
                 <div class="col">
-                    <img src="https://cdn-icons-png.flaticon.com/512/481/481431.png" alt="Humidity Icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/481/481431.png" alt="Humidity">
                     <div>
                         <p class="humidity">--%</p>
                         <p>Humidity</p>
                     </div>
                 </div>
                 <div class="col">
-                    <img src="https://cdn-icons-png.flaticon.com/512/959/959711.png" alt="Wind Speed Icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/959/959711.png" alt="Wind Speed">
                     <div>
                         <p class="wind">-- km/h</p>
                         <p>Wind Speed</p>
@@ -125,6 +79,5 @@
             </div>
         </div>
     </div>
-
 </body>
 </html>
