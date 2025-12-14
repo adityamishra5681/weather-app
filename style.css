@@ -1,92 +1,151 @@
-/* Remove the @import line. We are loading fonts in HTML now. */
+:root {
+    /* Light Mode Variables */
+    --bg-image: url('https://images.unsplash.com/photo-1595867865331-5294c5783353?q=80&w=2670&auto=format&fit=crop');
+    --text-color: #333;
+    --card-bg: rgba(255, 255, 255, 0.4);
+    --input-bg: rgba(255, 255, 255, 0.7);
+    --btn-bg: #fff;
+    --btn-hover: #f0f0f0;
+    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+.dark-mode {
+    /* Dark Mode Variables */
+    --bg-image: url('https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?q=80&w=2665&auto=format&fit=crop');
+    --text-color: #fff;
+    --card-bg: rgba(0, 0, 0, 0.3); /* Darker glass */
+    --input-bg: rgba(255, 255, 255, 0.1);
+    --btn-bg: rgba(255, 255, 255, 0.2);
+    --btn-hover: rgba(255, 255, 255, 0.3);
+    --shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
 
 * {
     margin: 0;
     padding: 0;
     font-family: 'Poppins', sans-serif;
     box-sizing: border-box;
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 body {
-    background: #222;
-    /* This image is very large. The preload in HTML helps, but consider using a smaller image or WebP format for production */
-    background-image: url('https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?q=80&w=2665&auto=format&fit=crop'); 
+    background: #222; /* Fallback */
+    background-image: var(--bg-image);
     background-size: cover;
     background-position: center;
+    min-height: 100vh;
+    color: var(--text-color);
+}
+
+/* Navbar */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background: rgba(0,0,0,0.2);
+    backdrop-filter: blur(5px);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 600;
+    color: #fff; /* Always white on nav for contrast */
+}
+
+.nav-links button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: rgba(255,255,255,0.2) !important;
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.4) !important;
+}
+
+/* Main Container */
+.container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    padding-top: 60px; /* Space for navbar */
 }
-
-/* ... Keep the rest of your CSS exactly the same ... */
 
 .card {
     width: 90%;
     max-width: 470px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #fff;
+    background: var(--card-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 20px;
     padding: 40px 35px;
     text-align: center;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow);
+    color: var(--text-color);
 }
 
+/* Search Bar */
 .search {
-    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
 }
 
 .search input {
     border: 0;
     outline: 0;
-    background: #ebfffc;
-    color: #555;
+    background: var(--input-bg);
+    color: var(--text-color);
     padding: 10px 25px;
-    height: 60px;
+    height: 50px;
     border-radius: 30px;
     flex: 1;
-    margin-right: 16px;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .search button {
     border: 0;
     outline: 0;
-    background: #ebfffc;
+    background: var(--btn-bg);
+    color: var(--text-color);
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     cursor: pointer;
-    transition: 0.2s;
+    font-size: 18px;
 }
 
 .search button:hover {
-    background: #d6fffa;
+    background: var(--btn-hover);
     transform: scale(1.05);
 }
 
-.search button img {
-    width: 16px;
-}
-
+/* Weather Info */
 .weather-icon {
-    width: 170px;
+    width: 150px;
     margin-top: 30px;
 }
 
 .weather h1 {
-    font-size: 80px;
+    font-size: 70px;
     font-weight: 500;
 }
 
 .weather h2 {
-    font-size: 45px;
+    font-size: 40px;
     font-weight: 400;
     margin-top: -10px;
 }
@@ -96,7 +155,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
-    margin-top: 50px;
+    margin-top: 40px;
 }
 
 .col {
@@ -105,22 +164,78 @@ body {
     text-align: left;
 }
 
-.col img {
-    width: 40px;
+.col i {
+    font-size: 28px;
     margin-right: 10px;
-    filter: invert(1);
 }
 
-.weather {
-    display: none;
-}
-
-.error {
-    text-align: left;
-    margin-left: 10px;
-    font-size: 14px;
-    margin-top: 10px;
-    color: #ffcccc;
+.weather { display: none; }
+.error { 
     display: none; 
+    color: #ff6b6b; 
+    margin-top: 10px; 
     font-weight: bold;
 }
+
+/* Modals */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; 
+    z-index: 200; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0,0,0,0.6); 
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    color: #333;
+    position: relative;
+    text-align: left;
+}
+
+.close-btn, .close-help {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333;
+}
+
+/* Auth Form Styles */
+.input-group { margin-bottom: 15px; }
+.input-group label { display: block; margin-bottom: 5px; font-size: 14px; }
+.input-group input { 
+    width: 100%; padding: 10px; 
+    border: 1px solid #ddd; border-radius: 5px; 
+}
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #222;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.switch-auth { margin-top: 15px; font-size: 14px; text-align: center; }
+#toggle-auth { color: #007bff; cursor: pointer; font-weight: 600; }
+
+/* Help Modal Styles */
+.help-item {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    gap: 15px;
+}
+.help-item i { font-size: 24px; color: #555; }
