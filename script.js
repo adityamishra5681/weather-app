@@ -23,7 +23,6 @@ async function checkWeather(url) {
             document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
             document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
 
-            // Update Icon
             const main = data.weather[0].main;
             if(main == "Clouds") weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/1163/1163624.png";
             else if(main == "Clear") weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/869/869869.png";
@@ -40,17 +39,14 @@ async function checkWeather(url) {
     }
 }
 
-// Search Button
 searchBtn.addEventListener("click", () => {
     if(searchBox.value) checkWeather(`${apiBase}&q=${searchBox.value}&appid=${apiKey}`);
 });
 
-// Enter Key
 searchBox.addEventListener("keypress", (e) => {
     if (e.key === "Enter" && searchBox.value) checkWeather(`${apiBase}&q=${searchBox.value}&appid=${apiKey}`);
 });
 
-// Location Button
 locationBtn.addEventListener("click", () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -66,15 +62,17 @@ locationBtn.addEventListener("click", () => {
     }
 });
 
-// Theme Toggle
+// Theme Toggle Logic
 themeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
     const icon = themeToggle.querySelector("i");
     
+    // If Dark Mode is ON -> Show Sun (to switch back to light)
     if (document.body.classList.contains("dark-mode")) {
         icon.classList.remove("fa-moon");
         icon.classList.add("fa-sun");
     } else {
+        // If Dark Mode is OFF -> Show Moon (to switch to dark)
         icon.classList.remove("fa-sun");
         icon.classList.add("fa-moon");
     }
