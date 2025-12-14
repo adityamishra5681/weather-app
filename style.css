@@ -6,16 +6,63 @@
 }
 
 body {
-    background: #222; /* Fallback color */
+    background: #222;
+    min-height: 100dvh;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    min-height: 100dvh; /* Better for mobile browsers */
+    justify-content: center;
+    overflow: hidden;
     position: relative;
-    overflow: hidden; /* Prevents scrollbars from video */
 }
 
-/* Video Background Styling */
+/* --- Header & Branding --- */
+header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+}
+
+.logo {
+    color: #fff;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+#theme-toggle {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+#theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.toggle-icon {
+    width: 24px;
+    filter: invert(1);
+}
+
+/* Hide Moon by default (Assuming Light Mode first) */
+.moon { display: none; }
+
+/* --- Video Backgrounds --- */
 .video-container {
     position: absolute;
     top: 0;
@@ -23,7 +70,6 @@ body {
     width: 100%;
     height: 100%;
     z-index: -1;
-    overflow: hidden;
 }
 
 .bg-video {
@@ -31,26 +77,24 @@ body {
     height: 100%;
     object-fit: cover;
     position: absolute;
-    top: 0;
-    left: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.8s ease;
 }
 
-/* Default Video Visibility (Light Mode) */
 .light-video { opacity: 1; }
 .dark-video { opacity: 0; }
 
-/* Dark Mode Detection: Swaps the video */
-@media (prefers-color-scheme: dark) {
-    .light-video { opacity: 0; }
-    .dark-video { opacity: 1; }
-}
+/* --- Dark Mode State (Triggered by JS) --- */
+body.dark-mode .light-video { opacity: 0; }
+body.dark-mode .dark-video { opacity: 1; }
+body.dark-mode .moon { display: block; }
+body.dark-mode .sun { display: none; }
 
+/* --- Card Styles --- */
 .card {
     width: 90%;
     max-width: 470px;
-    background: rgba(255, 255, 255, 0.15); /* Slightly more transparent */
-    backdrop-filter: blur(15px); /* Stronger blur for readability over video */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #fff;
@@ -58,6 +102,7 @@ body {
     padding: 40px 35px;
     text-align: center;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    margin-top: 60px; /* Space for header */
 }
 
 .search {
@@ -65,6 +110,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
 }
 
 .search input {
@@ -72,13 +118,12 @@ body {
     outline: 0;
     background: #ebfffc;
     color: #555;
-    padding: 10px 25px;
+    padding: 10px 20px;
     height: 60px;
     border-radius: 30px;
     flex: 1;
-    margin-right: 16px;
     font-size: 18px;
-    text-transform: capitalize;
+    text-transform: capitalize; /* Capitalizes user input */
 }
 
 .search button {
@@ -90,9 +135,10 @@ body {
     height: 60px;
     cursor: pointer;
     transition: 0.2s;
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .search button:hover {
@@ -101,7 +147,12 @@ body {
 }
 
 .search button img {
-    width: 16px;
+    width: 20px; /* Slightly larger icons */
+}
+
+/* Location button specific styling to differentiate slightly if needed */
+#location-btn img {
+    width: 22px;
 }
 
 .weather-icon {
@@ -137,7 +188,7 @@ body {
 .col img {
     width: 40px;
     margin-right: 10px;
-    filter: invert(1); /* Keeps icons white */
+    filter: invert(1);
 }
 
 .weather {
@@ -150,31 +201,15 @@ body {
     font-size: 14px;
     margin-top: 10px;
     color: #ffcccc;
-    display: none; 
+    display: none;
     font-weight: bold;
-    background: rgba(255, 0, 0, 0.1); /* Adds background to error for readability */
-    padding: 5px 10px;
-    border-radius: 5px;
+    background: rgba(255, 0, 0, 0.15);
+    padding: 8px 12px;
+    border-radius: 8px;
 }
 
-/* Mobile Optimizations */
 @media (max-width: 400px) {
-    .card {
-        padding: 30px 20px;
-    }
-    .weather h1 {
-        font-size: 60px;
-    }
-    .weather h2 {
-        font-size: 35px;
-    }
-    .search input {
-        font-size: 16px;
-        height: 50px;
-    }
-    .search button {
-        width: 50px;
-        height: 50px;
-    }
+    .search input { font-size: 16px; padding: 10px 15px; }
+    .search button { width: 50px; height: 50px; }
+    header { padding: 15px 20px; }
 }
-
