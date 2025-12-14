@@ -10,14 +10,12 @@ const weatherIcon = document.querySelector(".weather-icon");
 const errorDiv = document.querySelector(".error");
 const weatherDiv = document.querySelector(".weather");
 
-// --- 1. Function to Update UI ---
 function updateWeatherUI(data) {
     document.querySelector(".city").innerHTML = data.name;
     document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
     document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
     document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
 
-    // Set Icon based on weather condition
     const weatherMain = data.weather[0].main;
     if (weatherMain == "Clouds") weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/1163/1163624.png";
     else if (weatherMain == "Clear") weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/869/869869.png";
@@ -25,12 +23,12 @@ function updateWeatherUI(data) {
     else if (weatherMain == "Drizzle") weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/3076/3076129.png";
     else if (weatherMain == "Mist") weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/4005/4005901.png";
     else if (weatherMain == "Snow") weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/2315/2315309.png";
-    
+    else weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/869/869869.png";
+
     weatherDiv.style.display = "block";
     errorDiv.style.display = "none";
 }
 
-// --- 2. Fetch Weather by City Name ---
 async function checkWeather(city) {
     if(!city) return;
     try {
@@ -48,7 +46,6 @@ async function checkWeather(city) {
     }
 }
 
-// --- 3. Fetch Weather by GPS (Location) ---
 async function checkWeatherByCoords(lat, lon) {
     try {
         const response = await fetch(`${apiUrlLocation}&lat=${lat}&lon=${lon}&appid=${apiKey}`);
@@ -60,13 +57,11 @@ async function checkWeatherByCoords(lat, lon) {
     }
 }
 
-// --- Event Listeners ---
 searchBtn.addEventListener("click", () => checkWeather(searchBox.value));
 searchBox.addEventListener("keypress", (e) => {
     if (e.key === "Enter") checkWeather(searchBox.value);
 });
 
-// GPS Button Click
 locationBtn.addEventListener("click", () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -82,7 +77,6 @@ locationBtn.addEventListener("click", () => {
     }
 });
 
-// Theme Toggle Click
 themeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
 });
