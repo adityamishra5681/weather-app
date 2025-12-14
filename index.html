@@ -3,45 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Advanced Weather App with Live Location, Dark Mode, and User Accounts.">
-    <title>Weather & Accounts</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Weather App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="dark-mode"> <nav>
+<body class="dark-mode">
+
+    <nav>
         <div class="logo"><i class="fa-solid fa-cloud-bolt"></i> Atmos</div>
         <div class="nav-links">
-            <button id="theme-toggle" aria-label="Toggle Dark Mode"><i class="fa-solid fa-sun"></i></button>
-            <button id="help-btn" aria-label="Help">Help</button>
-            <button id="login-btn" class="btn-primary">Login</button>
+            <button id="theme-toggle"><i class="fa-solid fa-sun"></i></button>
         </div>
     </nav>
 
     <div class="container">
         <div class="card">
             <div class="search">
-                <input type="text" placeholder="Enter city name" spellcheck="false" aria-label="City Name">
-                <button id="search-btn" aria-label="Search City">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-                <button id="location-btn" aria-label="Use Live Location" class="loc-btn">
-                    <i class="fa-solid fa-location-crosshairs"></i>
-                </button>
+                <input type="text" placeholder="Enter city name" spellcheck="false">
+                <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <button id="location-btn"><i class="fa-solid fa-location-crosshairs"></i></button>
             </div>
             
-            <div class="error">
+            <div class="error" style="display: none;">
                 <p>Invalid City Name!</p>
             </div>
 
-            <div class="weather">
-                <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon" alt="weather condition" width="150" height="150">
+            <div class="weather" style="display: none;">
+                <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon">
                 <h1 class="temp">--°c</h1>
-                <h2 class="city">Search City</h2>
+                <h2 class="city">City</h2>
                 <div class="details">
                     <div class="col">
                         <i class="fa-solid fa-water"></i>
@@ -58,52 +48,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="auth-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <div class="auth-header">
-                <h2 id="modal-title">Welcome Back</h2>
-                <p>Please enter your details.</p>
-            </div>
-            <form class="auth-form">
-                <div class="input-group">
-                    <label>Email</label>
-                    <input type="email" placeholder="user@example.com" required>
-                </div>
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="submit-btn">Continue</button>
-                <p class="switch-auth">Don't have an account? <span id="toggle-auth">Sign Up</span></p>
-            </form>
-        </div>
-    </div>
-
-    <div id="help-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-help">&times;</span>
-            <h2>Help & Support</h2>
-            <div class="help-item">
-                <i class="fa-solid fa-envelope"></i>
-                <div>
-                    <strong>Email Support</strong>
-                    <p>support@atmosweather.com</p>
-                </div>
-            </div>
-            <div class="help-item">
-                <i class="fa-solid fa-phone"></i>
-                <div>
-                    <strong>Phone</strong>
-                    <p>+1 234 567 890</p>
-                </div>
-            </div>
-            <div class="help-info">
-                <p><strong>How to use:</strong> Click the target icon to use your GPS location, or type a city name to search.</p>
             </div>
         </div>
     </div>
