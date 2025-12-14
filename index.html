@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Atmos - Check live weather forecasts for any city or your current location.">
+    <meta name="description" content="Atmos - Live Weather Forecast with Dark Mode and Location Detection">
     <title>Atmos Weather</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,8 +36,8 @@
         <div class="search">
             <input type="text" placeholder="Enter city name" spellcheck="false" list="city-suggestions" id="city-input">
             
-            <button id="location-btn" aria-label="Use My Location">
-                <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" alt="GPS Location">
+            <button id="location-btn" aria-label="Use My Location" title="Use My Location">
+                <img src="https://cdn-icons-png.flaticon.com/512/684/684908.png" alt="GPS">
             </button>
             
             <button id="search-btn" aria-label="Search">
@@ -48,9 +48,10 @@
                 <option value="Mumbai"><option value="Delhi"><option value="Bangalore">
                 <option value="Hyderabad"><option value="Ahmedabad"><option value="Chennai">
                 <option value="Kolkata"><option value="Pune"><option value="Jaipur">
-                <option value="Lucknow"><option value="London"><option value="New York">
-                <option value="Tokyo"><option value="Paris"><option value="Dubai">
-                </datalist>
+                <option value="Lucknow"><option value="Chandigarh"><option value="Goa">
+                <option value="London"><option value="New York"><option value="Tokyo">
+                <option value="Paris"><option value="Dubai"><option value="Singapore">
+            </datalist>
         </div>
         
         <div class="error">
@@ -58,7 +59,7 @@
         </div>
 
         <div class="weather">
-            <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon" alt="Weather Icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon" alt="Weather Condition">
             <h1 class="temp">--°c</h1>
             <h2 class="city">--</h2>
             <div class="details">
