@@ -3,15 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Check current weather conditions, humidity, and wind speed for any city worldwide.">
     <title>Weather Forecast</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="preload" as="image" href="https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?q=80&w=2665&auto=format&fit=crop">
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="card">
         <div class="search">
-            <input type="text" placeholder="Enter city name" spellcheck="false">
-            <button><img src="https://cdn-icons-png.flaticon.com/512/751/751463.png" alt="search"></button>
+            <input type="text" placeholder="Enter city name" spellcheck="false" aria-label="City Name">
+            <button aria-label="Search">
+                <img src="https://cdn-icons-png.flaticon.com/512/751/751463.png" alt="search icon" width="16" height="16">
+            </button>
         </div>
         
         <div class="error">
@@ -19,19 +29,19 @@
         </div>
 
         <div class="weather">
-            <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon" alt="weather condition" width="170" height="170">
             <h1 class="temp">--°c</h1>
             <h2 class="city">City</h2>
             <div class="details">
                 <div class="col">
-                    <img src="https://cdn-icons-png.flaticon.com/512/481/481431.png">
+                    <img src="https://cdn-icons-png.flaticon.com/512/481/481431.png" alt="humidity icon" width="40" height="40">
                     <div>
                         <p class="humidity">--%</p>
                         <p>Humidity</p>
                     </div>
                 </div>
                 <div class="col">
-                    <img src="https://cdn-icons-png.flaticon.com/512/959/959711.png">
+                    <img src="https://cdn-icons-png.flaticon.com/512/959/959711.png" alt="wind speed icon" width="40" height="40">
                     <div>
                         <p class="wind">-- km/h</p>
                         <p>Wind Speed</p>
