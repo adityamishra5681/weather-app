@@ -1,16 +1,18 @@
 :root {
     --text-color: #333;
     --card-bg: rgba(255, 255, 255, 0.4);
-    --input-bg: rgba(255, 255, 255, 0.85); /* Lighter for Light Mode */
+    --input-bg: rgba(255, 255, 255, 0.7); 
     --btn-bg: #fff;
     --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }
 
 .dark-mode {
     --text-color: #fff;
-    --card-bg: rgba(0, 0, 0, 0.45);
-    /* Made search bar lighter for visibility */
-    --input-bg: rgba(255, 255, 255, 0.25); 
+    --card-bg: rgba(0, 0, 0, 0.4);
+    
+    /* UPDATED: Much brighter search bar in dark mode (0.6 opacity) */
+    --input-bg: rgba(255, 255, 255, 0.6); 
+    
     --btn-bg: rgba(255, 255, 255, 0.2);
     --shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
 }
@@ -26,7 +28,7 @@
 body {
     min-height: 100dvh;
     color: var(--text-color);
-    overflow-x: hidden;
+    overflow: hidden;
     position: relative;
     background: #222;
 }
@@ -62,32 +64,33 @@ nav {
 /* --- Main Card --- */
 .container {
     display: flex; justify-content: center; align-items: center;
-    min-height: 100vh; padding-top: 70px; padding-bottom: 20px;
+    height: 100vh; padding-top: 60px;
     position: relative; z-index: 10;
 }
 
 .card {
-    width: 90%; max-width: 500px; /* Slightly wider for more info */
+    width: 90%; max-width: 470px;
     background: var(--card-bg);
     backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px; padding: 30px;
+    border-radius: 20px; padding: 40px 35px;
     text-align: center; box-shadow: var(--shadow); color: var(--text-color);
 }
 
 /* --- Search Area --- */
-.search { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; }
+.search { display: flex; align-items: center; gap: 10px; }
 
 .search input {
-    border: 1px solid rgba(255,255,255,0.1); outline: 0;
+    border: 0; outline: 0;
     background: var(--input-bg);
     color: var(--text-color);
     padding: 10px 20px; height: 50px; border-radius: 30px;
     flex: 1; font-size: 16px; text-transform: capitalize;
 }
-/* Ensure placeholder text is visible */
-.search input::placeholder { color: rgba(255, 255, 255, 0.7); }
-body:not(.dark-mode) .search input::placeholder { color: #555; }
+
+/* Fix for dark text in bright bar if needed */
+body.dark-mode .search input { color: #fff; }
+body.dark-mode .search input::placeholder { color: rgba(255,255,255,0.8); }
 
 .search button {
     border: 0; outline: 0; background: #fff; color: #000;
@@ -98,28 +101,16 @@ body:not(.dark-mode) .search input::placeholder { color: #555; }
 .search button:hover { transform: scale(1.1); background: #f0f0f0; }
 
 /* --- Weather Info --- */
-.weather-icon { width: 140px; margin-top: 10px; }
-.weather h1 { font-size: 65px; font-weight: 500; }
-.weather h2 { font-size: 35px; font-weight: 400; margin-top: -10px; margin-bottom: 20px; }
+.weather-icon { width: 150px; margin-top: 30px; }
+.weather h1 { font-size: 70px; font-weight: 500; }
+.weather h2 { font-size: 40px; font-weight: 400; margin-top: -10px; }
 
-/* New Grid Layout for Extra Info */
-.details-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 Columns */
-    gap: 15px;
-    margin-top: 20px;
+.details {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; margin-top: 40px;
 }
-
-.col {
-    display: flex; align-items: center;
-    background: rgba(255, 255, 255, 0.1); /* Subtle box background */
-    padding: 10px; border-radius: 10px;
-}
-
-.col i { font-size: 22px; margin-right: 12px; width: 25px; text-align: center; }
-.col div { text-align: left; }
-.col p { margin: 0; font-weight: 500; font-size: 15px; }
-.col .label { font-size: 12px; font-weight: 300; opacity: 0.8; }
+.col { display: flex; align-items: center; text-align: left; }
+.col i { font-size: 28px; margin-right: 10px; }
 
 .weather { display: none; }
 .error { display: none; color: #ffcccc; margin-top: 10px; font-weight: bold; background: rgba(255,0,0,0.2); padding: 5px; border-radius: 5px; }
