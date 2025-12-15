@@ -72,7 +72,7 @@ nav {
 }
 
 #theme-toggle:hover {
-    transform: rotate(90deg) scale(1.1);
+    transform: rotate(180deg) scale(1.1);
 }
 #theme-toggle:active {
     background: transparent;
@@ -139,3 +139,4 @@ body.dark-mode .search input::placeholder {
 
 .weather { display: none; }
 .error { display: none; color: #ffcccc; margin-top: 10px; font-weight: bold; background: rgba(255,0,0,0.2); padding: 5px; border-radius: 5px; }
+
