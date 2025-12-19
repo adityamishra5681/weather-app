@@ -11,7 +11,7 @@ const weatherDiv = document.querySelector(".weather");
 const errorDiv = document.querySelector(".error");
 const forecastSection = document.querySelector("#forecast-section");
 
-let lastCity = "London"; // Fallback for refresh
+let lastCity = "London";
 
 async function checkWeather(city, lat = null, lon = null) {
     let url = lat ? `${weatherApi}&lat=${lat}&lon=${lon}&appid=${apiKey}` : `${weatherApi}&q=${city}&appid=${apiKey}`;
@@ -24,21 +24,18 @@ async function checkWeather(city, lat = null, lon = null) {
         forecastSection.style.display = "none";
 
         const response = await fetch(url);
-        if (!response.ok) throw new Error("Not Found");
+        if (!response.ok) throw new Error();
         const data = await response.json();
         lastCity = data.name;
 
-        // Update Current Weather
         document.querySelector(".city").innerHTML = data.name;
         document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
         document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
         document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
         
-        const main = data.weather[0].main;
-        const iconId = data.weather[0].icon;
-        weatherIcon.src = `https://openweathermap.org/img/wn/${iconId}@4x.png`;
+        // Use high-res icons
+        weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
 
-        // Update Forecast
         const fResponse = await fetch(fUrl);
         const fData = await fResponse.json();
         const forecastEl = document.querySelector("#forecast");
@@ -48,7 +45,7 @@ async function checkWeather(city, lat = null, lon = null) {
             const date = new Date(day.dt * 1000).toLocaleDateString("en", {weekday: 'short'});
             forecastEl.innerHTML += `
                 <div class="forecast-item">
-                    <p style="opacity: 0.7;">${date}</p>
+                    <p>${date}</p>
                     <img src="https://openweathermap.org/img/wn/${day.weather[0].icon}.png">
                     <p><strong>${Math.round(day.main.temp)}°</strong></p>
                 </div>`;
@@ -56,7 +53,7 @@ async function checkWeather(city, lat = null, lon = null) {
 
         loader.style.display = "none";
         weatherDiv.style.display = "block";
-        forecastSection.style.display = "block"; // Show line + forecast
+        forecastSection.style.display = "block";
         searchBox.blur();
     } catch (err) {
         loader.style.display = "none";
@@ -64,17 +61,13 @@ async function checkWeather(city, lat = null, lon = null) {
     }
 }
 
-// Mobile Pull-to-Refresh Logic
+// Pull to refresh
 let touchStart = 0;
 window.addEventListener('touchstart', (e) => { touchStart = e.targetTouches[0].pageY; }, {passive: true});
 window.addEventListener('touchend', (e) => {
-    let touchEnd = e.changedTouches[0].pageY;
-    if (touchStart < touchEnd - 150 && window.scrollY === 0) {
-        checkWeather(lastCity); // Refresh current city
-    }
+    if (touchStart < e.changedTouches[0].pageY - 150) checkWeather(lastCity);
 }, {passive: true});
 
-// Listeners
 searchBtn.addEventListener("click", () => checkWeather(searchBox.value));
 searchBox.addEventListener("keypress", (e) => { if(e.key === "Enter") checkWeather(searchBox.value); });
 locationBtn.addEventListener("click", () => {
@@ -86,3 +79,5 @@ document.querySelector("#theme-toggle").addEventListener("click", () => {
     const icon = document.querySelector("#theme-toggle i");
     icon.classList.toggle("fa-moon"); icon.classList.toggle("fa-sun");
 });
+
+checkWeather("Mumbai");
