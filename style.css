@@ -19,12 +19,12 @@
     padding: 0;
     font-family: 'Poppins', sans-serif;
     box-sizing: border-box;
-    transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
-    -webkit-tap-highlight-color: transparent; /* Removes blue box on tap for mobile */
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+    min-height: 100dvh;
     color: var(--text-color);
     overflow: hidden;
     position: relative;
@@ -48,31 +48,39 @@ body.dark-mode #video-dark { opacity: 1; }
 /* --- Navbar --- */
 nav {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 15px 5%; /* Tighter padding for mobile */
+    padding: 15px 5%;
     position: fixed; width: 100%; top: 0; z-index: 100;
 }
-.logo { font-size: 22px; font-weight: 600; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+.logo { font-size: 24px; font-weight: 600; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
-/* --- Modern Theme Toggle --- */
+/* --- Restored Animation Toggle --- */
 #theme-toggle {
     background: transparent;
     border: none;
     outline: none;
     color: #fff;
-    width: 44px; height: 44px; /* Standard mobile touch target */
+    width: 50px; height: 50px; 
     cursor: pointer;
-    font-size: 24px;
+    font-size: 28px;
     display: flex; align-items: center; justify-content: center;
+    /* This handles the smooth rotation you wanted */
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
-#theme-toggle:active { transform: scale(0.9); }
+#theme-toggle:hover {
+    transform: rotate(90deg) scale(1.1);
+}
+
+#theme-toggle:active {
+    background: transparent;
+    transform: scale(0.9); /* Subtle feedback for mobile touch */
+}
 
 /* --- Main Card --- */
 .container {
     display: flex; justify-content: center; align-items: center;
-    height: 100dvh; padding-top: 40px;
+    height: 100dvh; padding-top: 60px;
     position: relative; z-index: 10;
 }
 
@@ -81,7 +89,7 @@ nav {
     background: var(--card-bg);
     backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 24px; padding: 35px 25px;
+    border-radius: 20px; padding: 35px 25px;
     text-align: center; box-shadow: var(--shadow); color: var(--text-color);
 }
 
@@ -92,46 +100,40 @@ nav {
     border: 0; outline: 0;
     background: var(--input-bg);
     color: var(--text-color);
-    padding: 0 20px; height: 50px; border-radius: 30px;
-    flex: 1; font-size: 16px; /* 16px prevents iOS zoom-on-focus */
+    padding: 10px 20px; height: 50px; border-radius: 30px;
+    flex: 1; font-size: 16px; /* Essential for mobile zoom prevention */
     text-transform: capitalize;
 }
 
 body.dark-mode .search input { color: #fff; }
-body.dark-mode .search input::placeholder { color: rgba(255, 255, 255, 0.6); }
+body.dark-mode .search input::placeholder { color: rgba(255, 255, 255, 0.7); }
 
 .search button {
     border: 0; outline: 0; background: #fff; color: #000;
     border-radius: 50%; width: 50px; height: 50px; cursor: pointer;
     font-size: 18px; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); position: relative; z-index: 20;
 }
+.search button:hover { transform: scale(1.1); background: #f0f0f0; }
 
 /* --- Weather Info --- */
-.weather-icon { width: 140px; margin-top: 20px; }
-.weather h1 { font-size: 64px; font-weight: 500; margin-bottom: 5px; }
-.weather h2 { font-size: 32px; font-weight: 400; opacity: 0.9; }
+.weather-icon { width: 140px; margin-top: 25px; }
+.weather h1 { font-size: 60px; font-weight: 500; }
+.weather h2 { font-size: 36px; font-weight: 400; margin-top: -5px; }
 
 .details {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 10px; margin-top: 30px;
+    padding: 0 10px; margin-top: 35px;
 }
 .col { display: flex; align-items: center; text-align: left; }
-.col i { font-size: 24px; margin-right: 12px; }
-.col p { font-size: 14px; opacity: 0.8; }
-.col .humidity, .col .wind { font-size: 18px; font-weight: 500; display: block; }
+.col i { font-size: 26px; margin-right: 10px; }
 
 .weather { display: none; }
-.error { 
-    display: none; color: #fff; margin-top: 15px; 
-    font-size: 14px; background: rgba(255, 75, 75, 0.3); 
-    padding: 8px; border-radius: 10px; 
-}
+.error { display: none; color: #ffcccc; margin-top: 10px; font-weight: bold; background: rgba(255,0,0,0.2); padding: 5px; border-radius: 5px; }
 
-/* --- Small Screen Optimization --- */
-@media (max-width: 380px) {
-    .card { padding: 25px 15px; }
+/* --- Screen specific scaling --- */
+@media (max-width: 400px) {
     .weather h1 { font-size: 50px; }
-    .weather h2 { font-size: 26px; }
-    .weather-icon { width: 110px; }
+    .weather h2 { font-size: 30px; }
+    .card { padding: 30px 20px; }
 }
