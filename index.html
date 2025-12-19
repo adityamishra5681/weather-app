@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Atmos Weather</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -22,41 +22,38 @@
     <nav>
         <div class="logo"><i class="fa-solid fa-cloud-bolt"></i> Atmos</div>
         <button id="theme-toggle" aria-label="Toggle Theme">
-            <i class="fa-solid fa-moon"></i>
+            <i class="fa-solid fa-sun" id="theme-icon"></i>
         </button>
     </nav>
 
     <div class="container">
         <div class="card">
             <div class="search">
-                <input type="text" placeholder="Enter city name..." spellcheck="false" list="city-suggestions" id="city-input">
+                <input type="text" placeholder="Enter city..." spellcheck="false" list="city-suggestions" id="city-input">
                 
                 <datalist id="city-suggestions">
                     <option value="Mumbai"><option value="Delhi"><option value="Bangalore">
-                    <option value="Hyderabad"><option value="Ahmedabad"><option value="Chennai">
-                    <option value="Kolkata"><option value="Pune"><option value="Jaipur">
-                    <option value="Lucknow"><option value="Kanpur"><option value="Nagpur">
-                    <option value="Indore"><option value="Bhopal"><option value="Patna">
-                    <option value="Ludhiana"><option value="Agra"><option value="Chandigarh">
                     <option value="London"><option value="New York"><option value="Tokyo">
+                    <option value="Paris"><option value="Dubai"><option value="Sydney">
                 </datalist>
 
                 <button id="search-btn" aria-label="Search">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
+                
                 <button id="location-btn" aria-label="Use My Location">
                     <i class="fa-solid fa-location-crosshairs"></i>
                 </button>
             </div>
             
-            <div class="error" style="display: none;">
+            <div class="error">
                 <p>Invalid City Name!</p>
             </div>
 
-            <div class="weather" style="display: none;">
-                <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon" alt="Weather Icon">
+            <div class="weather">
+                <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon" alt="Weather Condition">
                 <h1 class="temp">--°c</h1>
-                <h2 class="city">City</h2>
+                <h2 class="city">Search a City</h2>
                 
                 <div class="details">
                     <div class="col">
@@ -70,7 +67,7 @@
                         <i class="fa-solid fa-wind"></i>
                         <div>
                             <p class="wind">-- km/h</p>
-                            <p>Wind Speed</p>
+                            <p>Wind</p>
                         </div>
                     </div>
                 </div>
