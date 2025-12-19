@@ -1,75 +1,74 @@
-const apiKey = "f86a031b7d83efe3ba8c9b41060f4baf"; 
-const apiBase = "https://api.openweathermap.org/data/2.5/weather?units=metric";
+const apiKey = "f86a031b7d83efe3ba8c9b41060f4baf";
+const weatherApi = "https://api.openweathermap.org/data/2.5/weather?units=metric";
+const forecastApi = "https://api.openweathermap.org/data/2.5/forecast?units=metric";
 
 const searchBox = document.querySelector("#city-input");
 const searchBtn = document.querySelector("#search-btn");
 const locationBtn = document.querySelector("#location-btn");
 const weatherIcon = document.querySelector(".weather-icon");
-const errorDiv = document.querySelector(".error");
+const loader = document.querySelector("#loader");
 const weatherDiv = document.querySelector(".weather");
-const themeToggle = document.querySelector("#theme-toggle");
+const errorDiv = document.querySelector(".error");
 
-async function checkWeather(url) {
+const icons = {
+    "Clouds": "1163624.png", "Clear": "869869.png", "Rain": "1163657.png",
+    "Drizzle": "3076129.png", "Mist": "4005901.png", "Snow": "2315309.png"
+};
+
+async function checkWeather(city, lat = null, lon = null) {
+    let url = lat ? `${weatherApi}&lat=${lat}&lon=${lon}&appid=${apiKey}` : `${weatherApi}&q=${city}&appid=${apiKey}`;
+    let fUrl = lat ? `${forecastApi}&lat=${lat}&lon=${lon}&appid=${apiKey}` : `${forecastApi}&q=${city}&appid=${apiKey}`;
+
     try {
+        loader.style.display = "block";
+        weatherDiv.style.display = "none";
+        errorDiv.style.display = "none";
+
         const response = await fetch(url);
-        if (response.status === 404) {
-            errorDiv.style.display = "block";
-            weatherDiv.style.display = "none";
-        } else {
-            const data = await response.json();
-            
-            document.querySelector(".city").innerHTML = data.name;
-            document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
-            document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
-            document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+        if (!response.ok) throw new Error("Not Found");
+        const data = await response.json();
 
-            const main = data.weather[0].main;
-            if(main == "Clouds") weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/1163/1163624.png";
-            else if(main == "Clear") weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/869/869869.png";
-            else if(main == "Rain") weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/1163/1163657.png";
-            else if(main == "Drizzle") weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/3076/3076129.png";
-            else if(main == "Mist") weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/4005/4005901.png";
-            else weatherIcon.src = "https://cdn-icons-png.flaticon.com/512/869/869869.png";
+        // Update Current Weather
+        document.querySelector(".city").innerHTML = data.name;
+        document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
+        document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+        document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+        weatherIcon.src = `https://cdn-icons-png.flaticon.com/512/${(icons[data.weather[0].main] || "869869.png").split('.')[0]}/${icons[data.weather[0].main] || "869869.png"}`;
 
-            weatherDiv.style.display = "block";
-            errorDiv.style.display = "none";
-            searchBox.blur(); // Hide mobile keyboard
-        }
-    } catch (error) {
-        console.error("Error:", error);
+        // Get Forecast Data
+        const fResponse = await fetch(fUrl);
+        const fData = await fResponse.json();
+        const forecastEl = document.querySelector("#forecast");
+        forecastEl.innerHTML = "";
+
+        // Filter for mid-day weather for next 5 days
+        fData.list.filter(item => item.dt_txt.includes("12:00:00")).forEach(day => {
+            const date = new Date(day.dt * 1000).toLocaleDateString("en", {weekday: 'short'});
+            forecastEl.innerHTML += `
+                <div class="forecast-item">
+                    <p>${date}</p>
+                    <img src="https://openweathermap.org/img/wn/${day.weather[0].icon}.png">
+                    <p>${Math.round(day.main.temp)}°c</p>
+                </div>`;
+        });
+
+        loader.style.display = "none";
+        weatherDiv.style.display = "block";
+        searchBox.blur();
+    } catch (err) {
+        loader.style.display = "none";
+        errorDiv.style.display = "block";
     }
 }
 
-searchBtn.addEventListener("click", () => {
-    if(searchBox.value) checkWeather(`${apiBase}&q=${searchBox.value}&appid=${apiKey}`);
-});
-
-searchBox.addEventListener("keypress", (e) => {
-    if (e.key === "Enter" && searchBox.value) checkWeather(`${apiBase}&q=${searchBox.value}&appid=${apiKey}`);
-});
-
+searchBtn.addEventListener("click", () => checkWeather(searchBox.value));
+searchBox.addEventListener("keypress", (e) => { if(e.key === "Enter") checkWeather(searchBox.value); });
 locationBtn.addEventListener("click", () => {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                checkWeather(`${apiBase}&lat=${lat}&lon=${lon}&appid=${apiKey}`);
-            },
-            () => { alert("Location access denied."); }
-        );
-    } else {
-        alert("Geolocation not supported.");
-    }
+    navigator.geolocation.getCurrentPosition(p => checkWeather(null, p.coords.latitude, p.coords.longitude));
 });
 
-themeToggle.addEventListener("click", () => {
+document.querySelector("#theme-toggle").addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
-    const icon = themeToggle.querySelector("i");
-    
-    if (document.body.classList.contains("dark-mode")) {
-        icon.classList.replace("fa-moon", "fa-sun");
-    } else {
-        icon.classList.replace("fa-sun", "fa-moon");
-    }
+    const icon = document.querySelector("#theme-toggle i");
+    icon.classList.toggle("fa-moon"); icon.classList.toggle("fa-sun");
 });
