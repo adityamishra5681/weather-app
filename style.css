@@ -1,44 +1,46 @@
 :root {
-    --text-color: #333;
-    --card-bg: rgba(255, 255, 255, 0.4);
-    --input-bg: rgba(255, 255, 255, 0.7); 
-    --btn-bg: #fff;
-    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    --text-color: #333;
+    --card-bg: rgba(255, 255, 255, 0.4);
+    --input-bg: rgba(255, 255, 255, 0.7); 
+    --btn-bg: #fff;
+    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }
 
 .dark-mode {
-    --text-color: #fff;
-    --card-bg: rgba(0, 0, 0, 0.4);
-    --input-bg: rgba(0, 0, 0, 0.6); 
-    --btn-bg: rgba(255, 255, 255, 0.2);
-    --shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+    --text-color: #fff;
+    --card-bg: rgba(0, 0, 0, 0.4);
+    
+    /* UPDATED: Black background for search box in Dark Mode */
+    --input-bg: rgba(0, 0, 0, 0.6); 
+    
+    --btn-bg: rgba(255, 255, 255, 0.2);
+    --shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', sans-serif;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-    -webkit-tap-highlight-color: transparent;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
 }
 
 body {
-    min-height: 100dvh;
-    color: var(--text-color);
-    overflow: hidden;
-    position: relative;
-    background: #222;
+    min-height: 100dvh;
+    color: var(--text-color);
+    overflow: hidden;
+    position: relative;
+    background: #222;
 }
 
 /* --- Video Layers --- */
 .video-container {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    z-index: -1; pointer-events: none;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1; pointer-events: none;
 }
 .video-container video {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    object-fit: cover; transition: opacity 1s ease;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover; transition: opacity 1s ease;
 }
 #video-light { opacity: 1; }
 #video-dark { opacity: 0; }
@@ -47,93 +49,93 @@ body.dark-mode #video-dark { opacity: 1; }
 
 /* --- Navbar --- */
 nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 15px 5%;
-    position: fixed; width: 100%; top: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 5%; position: fixed; width: 100%; top: 0; z-index: 100;
 }
 .logo { font-size: 24px; font-weight: 600; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
 
-/* --- Restored Animation Toggle --- */
+/* --- Modern Theme Toggle --- */
 #theme-toggle {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #fff;
-    width: 50px; height: 50px; 
-    cursor: pointer;
-    font-size: 28px;
-    display: flex; align-items: center; justify-content: center;
-    /* This handles the smooth rotation you wanted */
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    width: 50px; 
+    height: 50px; 
+    cursor: pointer;
+    font-size: 28px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
 #theme-toggle:hover {
-    transform: rotate(90deg) scale(1.1);
+    transform: rotate(90deg) scale(1.1);
 }
-
 #theme-toggle:active {
-    background: transparent;
-    transform: scale(0.9); /* Subtle feedback for mobile touch */
+    background: transparent;
 }
 
 /* --- Main Card --- */
 .container {
-    display: flex; justify-content: center; align-items: center;
-    height: 100dvh; padding-top: 60px;
-    position: relative; z-index: 10;
+    display: flex; justify-content: center; align-items: center;
+    height: 100vh; padding-top: 60px;
+    position: relative; z-index: 10;
 }
 
 .card {
-    width: 92%; max-width: 470px;
-    background: var(--card-bg);
-    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px; padding: 35px 25px;
-    text-align: center; box-shadow: var(--shadow); color: var(--text-color);
+    width: 90%; max-width: 470px;
+    background: var(--card-bg);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px; padding: 40px 35px;
+    text-align: center; box-shadow: var(--shadow); color: var(--text-color);
 }
 
 /* --- Search Area --- */
 .search { display: flex; align-items: center; gap: 10px; }
 
 .search input {
-    border: 0; outline: 0;
-    background: var(--input-bg);
-    color: var(--text-color);
-    padding: 10px 20px; height: 50px; border-radius: 30px;
-    flex: 1; font-size: 16px; /* Essential for mobile zoom prevention */
-    text-transform: capitalize;
+    border: 0; outline: 0;
+    background: var(--input-bg);
+    color: var(--text-color);
+    padding: 10px 20px; height: 50px; border-radius: 30px;
+    flex: 1; font-size: 16px;
+    text-transform: capitalize;
 }
 
-body.dark-mode .search input { color: #fff; }
-body.dark-mode .search input::placeholder { color: rgba(255, 255, 255, 0.7); }
+/* UPDATED: Text is White "a little bit" (Standard White) in Dark Mode */
+body.dark-mode .search input { 
+    color: #fff; 
+    font-weight: 400; 
+}
+
+/* UPDATED: Placeholder is slightly transparent white */
+body.dark-mode .search input::placeholder { 
+    color: rgba(255, 255, 255, 0.7); 
+}
 
 .search button {
-    border: 0; outline: 0; background: #fff; color: #000;
-    border-radius: 50%; width: 50px; height: 50px; cursor: pointer;
-    font-size: 18px; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2); position: relative; z-index: 20;
+    border: 0; outline: 0; background: #fff; color: #000;
+    border-radius: 50%; width: 50px; height: 50px; cursor: pointer;
+    font-size: 18px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); position: relative; z-index: 20;
 }
 .search button:hover { transform: scale(1.1); background: #f0f0f0; }
 
 /* --- Weather Info --- */
-.weather-icon { width: 140px; margin-top: 25px; }
-.weather h1 { font-size: 60px; font-weight: 500; }
-.weather h2 { font-size: 36px; font-weight: 400; margin-top: -5px; }
+.weather-icon { width: 150px; margin-top: 30px; }
+.weather h1 { font-size: 70px; font-weight: 500; }
+.weather h2 { font-size: 40px; font-weight: 400; margin-top: -10px; }
 
 .details {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 10px; margin-top: 35px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; margin-top: 40px;
 }
 .col { display: flex; align-items: center; text-align: left; }
-.col i { font-size: 26px; margin-right: 10px; }
+.col i { font-size: 28px; margin-right: 10px; }
 
 .weather { display: none; }
 .error { display: none; color: #ffcccc; margin-top: 10px; font-weight: bold; background: rgba(255,0,0,0.2); padding: 5px; border-radius: 5px; }
-
-/* --- Screen specific scaling --- */
-@media (max-width: 400px) {
-    .weather h1 { font-size: 50px; }
-    .weather h2 { font-size: 30px; }
-    .card { padding: 30px 20px; }
-}
