@@ -1,48 +1,141 @@
-/* --- Enhanced Theme Toggle Effect --- */
+:root {
+    --text-color: #333;
+    --card-bg: rgba(255, 255, 255, 0.4);
+    --input-bg: rgba(255, 255, 255, 0.7); 
+    --btn-bg: #fff;
+    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+.dark-mode {
+    --text-color: #fff;
+    --card-bg: rgba(0, 0, 0, 0.4);
+    
+    /* UPDATED: Black background for search box in Dark Mode */
+    --input-bg: rgba(0, 0, 0, 0.6); 
+    
+    --btn-bg: rgba(255, 255, 255, 0.2);
+    --shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+body {
+    min-height: 100dvh;
+    color: var(--text-color);
+    overflow: hidden;
+    position: relative;
+    background: #222;
+}
+
+/* --- Video Layers --- */
+.video-container {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: -1; pointer-events: none;
+}
+.video-container video {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover; transition: opacity 1s ease;
+}
+#video-light { opacity: 1; }
+#video-dark { opacity: 0; }
+body.dark-mode #video-light { opacity: 0; }
+body.dark-mode #video-dark { opacity: 1; }
+
+/* --- Navbar --- */
+nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 5%; position: fixed; width: 100%; top: 0; z-index: 100;
+}
+.logo { font-size: 24px; font-weight: 600; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+
+/* --- Modern Theme Toggle --- */
 #theme-toggle {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #fff;
-    width: 50px; 
-    height: 50px; 
-    cursor: pointer;
-    font-size: 28px;
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                text-shadow 0.3s ease,
-                filter 0.3s ease;
-    /* Initial Sun Glow */
-    filter: drop-shadow(0 0 8px rgba(255, 204, 0, 0.6));
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    width: 50px; 
+    height: 50px; 
+    cursor: pointer;
+    font-size: 28px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
-/* Hover rotation from your original code */
 #theme-toggle:hover {
-    transform: rotate(90deg) scale(1.1);
+    transform: rotate(90deg) scale(1.1);
 }
-
-/* Tactile "Squish" effect for mobile taps */
 #theme-toggle:active {
-    transform: scale(0.8);
-    transition: transform 0.1s;
+    background: transparent;
 }
 
-/* Change the glow color when in Dark Mode */
-.dark-mode #theme-toggle {
-    filter: drop-shadow(0 0 12px rgba(138, 43, 226, 0.8)); /* Deep Purple/Blue glow */
-    color: #f0f0f0;
+/* --- Main Card --- */
+.container {
+    display: flex; justify-content: center; align-items: center;
+    height: 100vh; padding-top: 60px;
+    position: relative; z-index: 10;
 }
 
-/* Subtle pulse animation for the icon */
-@keyframes iconPulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.05); opacity: 0.9; }
-    100% { transform: scale(1); opacity: 1; }
+.card {
+    width: 90%; max-width: 470px;
+    background: var(--card-bg);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px; padding: 40px 35px;
+    text-align: center; box-shadow: var(--shadow); color: var(--text-color);
 }
 
-#theme-toggle i, #theme-toggle span {
-    animation: iconPulse 3s infinite ease-in-out;
+/* --- Search Area --- */
+.search { display: flex; align-items: center; gap: 10px; }
+
+.search input {
+    border: 0; outline: 0;
+    background: var(--input-bg);
+    color: var(--text-color);
+    padding: 10px 20px; height: 50px; border-radius: 30px;
+    flex: 1; font-size: 16px;
+    text-transform: capitalize;
 }
+
+/* UPDATED: Text is White "a little bit" (Standard White) in Dark Mode */
+body.dark-mode .search input { 
+    color: #fff; 
+    font-weight: 400; 
+}
+
+/* UPDATED: Placeholder is slightly transparent white */
+body.dark-mode .search input::placeholder { 
+    color: rgba(255, 255, 255, 0.7); 
+}
+
+.search button {
+    border: 0; outline: 0; background: #fff; color: #000;
+    border-radius: 50%; width: 50px; height: 50px; cursor: pointer;
+    font-size: 18px; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); position: relative; z-index: 20;
+}
+.search button:hover { transform: scale(1.1); background: #f0f0f0; }
+
+/* --- Weather Info --- */
+.weather-icon { width: 150px; margin-top: 30px; }
+.weather h1 { font-size: 70px; font-weight: 500; }
+.weather h2 { font-size: 40px; font-weight: 400; margin-top: -10px; }
+
+.details {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; margin-top: 40px;
+}
+.col { display: flex; align-items: center; text-align: left; }
+.col i { font-size: 28px; margin-right: 10px; }
+
+.weather { display: none; }
+.error { display: none; color: #ffcccc; margin-top: 10px; font-weight: bold; background: rgba(255,0,0,0.2); padding: 5px; border-radius: 5px; }
