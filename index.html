@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body id="refresh-body">
 
     <div class="video-container">
         <video autoplay muted loop playsinline id="video-light"><source src="morning.mp4" type="video/mp4"></video>
@@ -44,9 +44,10 @@
                     <div class="col"><i class="fa-solid fa-wind"></i><div><p class="wind">-- km/h</p><p>Wind</p></div></div>
                 </div>
 
-                <hr class="separator">
-                <div class="forecast-container" id="forecast">
-                    </div>
+                <div id="forecast-section" style="display: none;">
+                    <hr class="separator">
+                    <div class="forecast-container" id="forecast"></div>
+                </div>
             </div>
         </div>
     </div>
