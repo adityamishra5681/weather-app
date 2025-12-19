@@ -11,66 +11,42 @@
 <body>
 
     <div class="video-container">
-        <video autoplay muted loop playsinline id="video-light">
-            <source src="morning.mp4" type="video/mp4">
-        </video>
-        <video autoplay muted loop playsinline id="video-dark">
-            <source src="night.mp4" type="video/mp4">
-        </video>
+        <video autoplay muted loop playsinline id="video-light"><source src="morning.mp4" type="video/mp4"></video>
+        <video autoplay muted loop playsinline id="video-dark"><source src="night.mp4" type="video/mp4"></video>
     </div>
 
     <nav>
         <div class="logo"><i class="fa-solid fa-cloud-bolt"></i> Atmos</div>
-        <button id="theme-toggle" aria-label="Toggle Theme">
-            <i class="fa-solid fa-moon"></i>
-        </button>
+        <button id="theme-toggle" aria-label="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
     </nav>
 
     <div class="container">
         <div class="card">
             <div class="search">
-                <input type="text" placeholder="Enter city name..." spellcheck="false" list="city-suggestions" id="city-input">
-                
-                <datalist id="city-suggestions">
-                    <option value="Mumbai"><option value="Delhi"><option value="Bangalore">
-                    <option value="Hyderabad"><option value="Ahmedabad"><option value="Chennai">
-                    <option value="Kolkata"><option value="Pune"><option value="Jaipur">
-                    <option value="London"><option value="New York"><option value="Tokyo">
-                </datalist>
-
-                <button id="search-btn" aria-label="Search">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-                <button id="location-btn" aria-label="Use My Location">
-                    <i class="fa-solid fa-location-crosshairs"></i>
-                </button>
+                <input type="text" placeholder="Enter city..." spellcheck="false" id="city-input">
+                <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <button id="location-btn"><i class="fa-solid fa-location-crosshairs"></i></button>
             </div>
             
-            <div class="error">
-                <p>Invalid City Name!</p>
+            <div id="loader" style="display: none;">
+                <div class="spinner"></div>
             </div>
 
-            <div class="weather">
-                <img src="https://cdn-icons-png.flaticon.com/512/1163/1163624.png" class="weather-icon" alt="Weather Icon">
+            <div class="error" style="display: none;"><p>Invalid City Name!</p></div>
+
+            <div class="weather" style="display: none;">
+                <img src="" class="weather-icon" alt="Weather Icon">
                 <h1 class="temp">--°c</h1>
                 <h2 class="city">City</h2>
                 
                 <div class="details">
-                    <div class="col">
-                        <i class="fa-solid fa-water"></i>
-                        <div>
-                            <p class="humidity">--%</p>
-                            <p>Humidity</p>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <i class="fa-solid fa-wind"></i>
-                        <div>
-                            <p class="wind">-- km/h</p>
-                            <p>Wind Speed</p>
-                        </div>
-                    </div>
+                    <div class="col"><i class="fa-solid fa-water"></i><div><p class="humidity">--%</p><p>Humidity</p></div></div>
+                    <div class="col"><i class="fa-solid fa-wind"></i><div><p class="wind">-- km/h</p><p>Wind</p></div></div>
                 </div>
+
+                <hr class="separator">
+                <div class="forecast-container" id="forecast">
+                    </div>
             </div>
         </div>
     </div>
