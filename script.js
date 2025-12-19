@@ -11,7 +11,7 @@ const weatherDiv = document.querySelector(".weather");
 const errorDiv = document.querySelector(".error");
 const forecastSection = document.querySelector("#forecast-section");
 
-let lastCity = "London";
+let lastCity = "Mumbai";
 
 async function checkWeather(city, lat = null, lon = null) {
     let url = lat ? `${weatherApi}&lat=${lat}&lon=${lon}&appid=${apiKey}` : `${weatherApi}&q=${city}&appid=${apiKey}`;
@@ -33,14 +33,16 @@ async function checkWeather(city, lat = null, lon = null) {
         document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
         document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
         
-        // Use high-res icons
+        // Main high-res weather icon
         weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
 
+        // Forecast fetching
         const fResponse = await fetch(fUrl);
         const fData = await fResponse.json();
         const forecastEl = document.querySelector("#forecast");
         forecastEl.innerHTML = "";
 
+        // Filter one forecast per day (around noon)
         fData.list.filter(item => item.dt_txt.includes("12:00:00")).forEach(day => {
             const date = new Date(day.dt * 1000).toLocaleDateString("en", {weekday: 'short'});
             forecastEl.innerHTML += `
@@ -54,14 +56,14 @@ async function checkWeather(city, lat = null, lon = null) {
         loader.style.display = "none";
         weatherDiv.style.display = "block";
         forecastSection.style.display = "block";
-        searchBox.blur();
+        searchBox.blur(); // Hide keyboard
     } catch (err) {
         loader.style.display = "none";
         errorDiv.style.display = "block";
     }
 }
 
-// Pull to refresh
+// Pull to refresh mechanism for mobile
 let touchStart = 0;
 window.addEventListener('touchstart', (e) => { touchStart = e.targetTouches[0].pageY; }, {passive: true});
 window.addEventListener('touchend', (e) => {
@@ -80,4 +82,5 @@ document.querySelector("#theme-toggle").addEventListener("click", () => {
     icon.classList.toggle("fa-moon"); icon.classList.toggle("fa-sun");
 });
 
+// Start with Mumbai
 checkWeather("Mumbai");
