@@ -34,7 +34,7 @@ nav { display: flex; justify-content: space-between; align-items: center; paddin
 /* Weather Text & Icons */
 .weather-icon { width: 130px; margin: 10px 0; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2)); }
 .weather h1 { font-size: 65px; font-weight: 500; }
-.city { font-size: 36px; font-weight: 400; text-transform: capitalize; } /* Capitalization fix */
+.city { font-size: 36px; font-weight: 400; text-transform: capitalize; }
 
 /* Visible Icons for details */
 .details { display: flex; justify-content: space-between; margin-top: 30px; padding: 0 10px; }
@@ -49,3 +49,4 @@ nav { display: flex; justify-content: space-between; align-items: center; paddin
 
 .spinner { width: 35px; height: 35px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--text-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
