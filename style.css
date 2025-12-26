@@ -19,23 +19,17 @@
 * { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; box-sizing: border-box; transition: background 0.3s, color 0.3s; -webkit-tap-highlight-color: transparent; }
 body { min-height: 100dvh; color: var(--text-color); overflow: hidden; position: relative; background: #222; touch-action: pan-y; }
 
-/* Video Container - Z-Index -1 to stay behind */
+/* Video Container */
 .video-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease; }
 #video-light { opacity: 1; } #video-dark { opacity: 0; }
 body.dark-mode #video-light { opacity: 0; } body.dark-mode #video-dark { opacity: 1; }
 
-/* NAV - Z-Index 1000 to stay ON TOP */
+/* Navigation - High Z-Index */
 nav { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: center; 
-    padding: 15px 5%; 
-    position: fixed; 
-    width: 100%; 
-    top: 0; 
-    z-index: 1000; 
-    pointer-events: auto;
+    display: flex; justify-content: space-between; align-items: center; 
+    padding: 15px 5%; position: fixed; width: 100%; top: 0; 
+    z-index: 1000; pointer-events: auto;
 }
 
 .logo { font-size: 24px; font-weight: 600; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
@@ -63,7 +57,7 @@ button { cursor: pointer; }
 #user-email { font-size: 13px; color: white; font-weight: 500; display: none; }
 @media (min-width: 600px) { #user-email { display: inline-block; } }
 
-/* AUTH MODAL - Z-Index 2000 to be on top of EVERYTHING */
+/* AUTH MODAL */
 #auth-modal {
     display: none; 
     position: fixed;
@@ -90,11 +84,15 @@ button { cursor: pointer; }
 
 .auth-box input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; background: var(--input-bg); color: var(--text-color); outline: none; }
 .auth-box button#auth-action-btn { width: 100%; padding: 12px; background: #333; color: white; border: none; border-radius: 8px; font-size: 16px; margin-top: 10px; }
+
+/* GOOGLE BUTTON STYLE */
+.auth-box button#google-btn { width: 100%; padding: 12px; background: #db4437; color: white; border: none; border-radius: 8px; font-size: 16px; margin-top: 10px; }
+
 .auth-box p { margin-top: 15px; font-size: 13px; color: #007bff; cursor: pointer; text-decoration: underline; }
 
 #close-modal { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; color: var(--text-color); }
 
-/* Main Card - Z-Index 10 */
+/* Main Card */
 .container { display: flex; justify-content: center; align-items: center; height: 100dvh; padding-top: 50px; position: relative; z-index: 10; pointer-events: none; }
 .card { width: 92%; max-width: 470px; background: var(--card-bg); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 25px; text-align: center; box-shadow: var(--shadow); color: var(--text-color); pointer-events: auto; }
 
