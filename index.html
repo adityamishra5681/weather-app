@@ -15,25 +15,23 @@
         <video autoplay muted loop playsinline id="video-dark"><source src="night.mp4" type="video/mp4"></video>
     </div>
 
-    <div id="auth-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; backdrop-filter: blur(5px);">
-        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 350px;">
-            <h2 id="modal-title" style="margin-bottom: 20px; color: #333;">Login</h2>
-            <input type="email" id="auth-email" placeholder="Email" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px;">
-            <input type="password" id="auth-pass" placeholder="Password" style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px;">
-            <button id="auth-action-btn" style="width: 100%; padding: 10px; background: #333; color: white; border: none; border-radius: 5px; cursor: pointer;">Submit</button>
-            <p id="toggle-auth-mode" style="margin-top: 15px; font-size: 13px; color: blue; cursor: pointer;">Need an account? Sign Up</p>
-            <button id="close-modal" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 20px; cursor: pointer;">&times;</button>
+    <div id="auth-modal">
+        <div class="auth-box">
+            <button id="close-modal">&times;</button>
+            <h2 id="modal-title">Login</h2>
+            <input type="email" id="auth-email" placeholder="Email Address">
+            <input type="password" id="auth-pass" placeholder="Password">
+            <button id="auth-action-btn">Submit</button>
+            <p id="toggle-auth-mode">Need an account? Sign Up</p>
         </div>
     </div>
 
     <nav>
         <div class="logo"><i class="fa-solid fa-cloud-bolt"></i> Atmos</div>
-        <div style="display: flex; gap: 15px; align-items: center;">
-            <span id="user-email" style="font-size: 12px; color: white; font-weight: 500;"></span>
-            
-            <button id="login-btn" style="background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 5px 15px; border-radius: 20px; cursor: pointer;">Login</button>
-            <button id="logout-btn" style="display: none; background: rgba(255,100,100,0.8); border: none; color: white; padding: 5px 15px; border-radius: 20px; cursor: pointer;">Logout</button>
-            
+        <div class="nav-buttons">
+            <span id="user-email"></span>
+            <button id="login-btn">Login</button>
+            <button id="logout-btn" style="display: none;">Logout</button>
             <button id="theme-toggle" aria-label="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
         </div>
     </nav>
@@ -82,7 +80,7 @@
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // YOUR CONFIGURATION IS NOW INSERTED HERE
+        // YOUR SPECIFIC KEYS
         const firebaseConfig = {
           apiKey: "AIzaSyAcJqbeZhbLlLS1ifimfUY_53ARMRCTEXg",
           authDomain: "atmos-weather-88090.firebaseapp.com",
@@ -93,21 +91,26 @@
           measurementId: "G-RCBT4LSRMZ"
         };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        window.auth = getAuth(app);
-        window.db = getFirestore(app);
-        
-        // Export functions to window so script.js can use them
-        window.createUser = createUserWithEmailAndPassword;
-        window.signIn = signInWithEmailAndPassword;
-        window.logout = signOut;
-        window.userState = onAuthStateChanged;
-        window.dbSet = setDoc;
-        window.dbGet = getDoc;
-        window.dbDoc = doc;
-        
-        console.log("Firebase Initialized Successfully");
+        try {
+            const app = initializeApp(firebaseConfig);
+            window.auth = getAuth(app);
+            window.db = getFirestore(app);
+            
+            // Expose functions globally for script.js
+            window.createUser = createUserWithEmailAndPassword;
+            window.signIn = signInWithEmailAndPassword;
+            window.logout = signOut;
+            window.userState = onAuthStateChanged;
+            window.dbSet = setDoc;
+            window.dbGet = getDoc;
+            window.dbDoc = doc;
+            
+            console.log("✅ Firebase Connected");
+            // Signal to script.js that we are ready
+            window.firebaseReady = true; 
+        } catch (e) {
+            console.error("❌ Firebase Failed:", e);
+        }
     </script>
 
     <script src="script.js" defer></script>
