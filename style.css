@@ -19,38 +19,31 @@
 * { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; box-sizing: border-box; transition: background 0.3s, color 0.3s; -webkit-tap-highlight-color: transparent; }
 body { min-height: 100dvh; color: var(--text-color); overflow: hidden; position: relative; background: #222; touch-action: pan-y; }
 
-/* Video Container */
+/* Video Container - Z-Index -1 to stay behind */
 .video-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
 .video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease; }
 #video-light { opacity: 1; } #video-dark { opacity: 0; }
 body.dark-mode #video-light { opacity: 0; } body.dark-mode #video-dark { opacity: 1; }
 
-/* --- NAVIGATION --- */
-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 5%;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    /* THE IMPORTANT PART: Huge Z-Index ensures it's on top of everything */
-    z-index: 9999 !important; 
-    pointer-events: auto; /* Ensures clicks work */
+/* NAV - Z-Index 1000 to stay ON TOP */
+nav { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 15px 5%; 
+    position: fixed; 
+    width: 100%; 
+    top: 0; 
+    z-index: 1000; 
+    pointer-events: auto;
 }
 
-/* Also ensure the buttons themselves are clickable */
-#login-btn, #logout-btn {
-    position: relative;
-    z-index: 10000;
-    cursor: pointer;
-}
+.logo { font-size: 24px; font-weight: 600; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
 
-/* Theme Toggle */
-#theme-toggle { background: transparent; border: none; color: #fff; width: 40px; height: 40px; cursor: pointer; font-size: 24px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
-
-/* --- AUTH BUTTONS (New) --- */
 .nav-buttons { display: flex; gap: 10px; align-items: center; }
+
+/* Buttons */
+button { cursor: pointer; }
 
 #login-btn, #logout-btn {
     background: rgba(255, 255, 255, 0.25);
@@ -61,43 +54,24 @@ nav {
     border-radius: 20px;
     font-size: 14px;
     font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
-#login-btn:hover, #logout-btn:hover {
-    background: rgba(255, 255, 255, 0.4);
-    transform: scale(1.05);
-}
+#logout-btn { background: rgba(255, 80, 80, 0.6); border-color: rgba(255, 80, 80, 0.8); }
 
-#logout-btn {
-    background: rgba(255, 80, 80, 0.6); /* Red tint for logout */
-    border: 1px solid rgba(255, 80, 80, 0.8);
-}
+#theme-toggle { background: transparent; border: none; color: #fff; width: 40px; height: 40px; font-size: 24px; display: flex; align-items: center; justify-content: center; }
 
-#user-email {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.9);
-    margin-right: 5px;
-    font-weight: 500;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-    display: none; /* Hidden on mobile by default */
-}
+#user-email { font-size: 13px; color: white; font-weight: 500; display: none; }
+@media (min-width: 600px) { #user-email { display: inline-block; } }
 
-@media (min-width: 600px) {
-    #user-email { display: inline-block; }
-}
-
-/* --- AUTH MODAL (New) --- */
+/* AUTH MODAL - Z-Index 2000 to be on top of EVERYTHING */
 #auth-modal {
-    display: none; /* Toggled by JS */
+    display: none; 
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.6); /* Dim background */
-    backdrop-filter: blur(8px);
-    z-index: 2000; /* Highest Layer */
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
 }
 
 .auth-box {
@@ -114,75 +88,29 @@ nav {
     color: var(--text-color);
 }
 
-.auth-box h2 { margin-bottom: 20px; }
+.auth-box input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; background: var(--input-bg); color: var(--text-color); outline: none; }
+.auth-box button#auth-action-btn { width: 100%; padding: 12px; background: #333; color: white; border: none; border-radius: 8px; font-size: 16px; margin-top: 10px; }
+.auth-box p { margin-top: 15px; font-size: 13px; color: #007bff; cursor: pointer; text-decoration: underline; }
 
-.auth-box input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background: var(--input-bg);
-    color: var(--text-color);
-    outline: none;
-}
+#close-modal { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; color: var(--text-color); }
 
-.auth-box button#auth-action-btn {
-    width: 100%;
-    padding: 12px;
-    background: #444;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-.dark-mode .auth-box button#auth-action-btn { background: #666; }
-
-.auth-box p {
-    margin-top: 15px;
-    font-size: 13px;
-    color: #007bff;
-    cursor: pointer;
-    text-decoration: underline;
-}
-
-#close-modal {
-    position: absolute;
-    top: 10px; right: 15px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--text-color);
-}
-
-
-/* --- WEATHER CARD (Existing) --- */
-.container { display: flex; justify-content: center; align-items: center; height: 100dvh; padding-top: 50px; position: relative; z-index: 10; }
-.card { width: 92%; max-width: 470px; background: var(--card-bg); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 25px; text-align: center; box-shadow: var(--shadow); color: var(--text-color); }
+/* Main Card - Z-Index 10 */
+.container { display: flex; justify-content: center; align-items: center; height: 100dvh; padding-top: 50px; position: relative; z-index: 10; pointer-events: none; }
+.card { width: 92%; max-width: 470px; background: var(--card-bg); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 25px; text-align: center; box-shadow: var(--shadow); color: var(--text-color); pointer-events: auto; }
 
 .search { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
-.search input { border: 0; outline: 0; background: var(--input-bg); color: var(--text-color); padding: 0 20px; height: 45px; border-radius: 30px; flex: 1; font-size: 16px; font-weight: 500; text-transform: capitalize; }
-.search button { border: 0; background: #fff; color: #000; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; font-size: 16px; }
+.search input { border: 0; outline: 0; background: var(--input-bg); color: var(--text-color); padding: 0 20px; height: 45px; border-radius: 30px; flex: 1; font-size: 16px; font-weight: 500; }
+.search button { border: 0; background: #fff; color: #000; border-radius: 50%; width: 45px; height: 45px; font-size: 16px; }
 
-/* Weather Text & Icons */
+/* Details */
 .weather-icon { width: 130px; margin: 10px 0; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2)); }
 .weather h1 { font-size: 65px; font-weight: 500; }
 .city { font-size: 36px; font-weight: 400; text-transform: capitalize; }
-
-/* Details */
 .details { display: flex; justify-content: space-between; margin-top: 30px; padding: 0 10px; }
 .col { display: flex; align-items: center; gap: 12px; text-align: left; }
-.col i { font-size: 32px; color: var(--icon-color); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); opacity: 1; }
-.col p { font-size: 15px; font-weight: 500; }
-
+.col i { font-size: 32px; color: var(--icon-color); }
 .separator { border: none; border-top: 1px solid rgba(255,255,255,0.25); margin: 20px 0; }
 .forecast-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; justify-content: space-between; }
 .forecast-item { min-width: 70px; font-size: 13px; background: rgba(255,255,255,0.1); padding: 10px 5px; border-radius: 12px; }
-.forecast-item img { width: 45px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
-
 .spinner { width: 35px; height: 35px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--text-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
