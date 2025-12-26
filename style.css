@@ -1,12 +1,19 @@
 :root {
-    --text-color: #333; --card-bg: rgba(255, 255, 255, 0.45);
-    --input-bg: rgba(255, 255, 255, 0.7); --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    --text-color: #333; 
+    --card-bg: rgba(255, 255, 255, 0.45);
+    --input-bg: rgba(255, 255, 255, 0.7); 
+    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
     --icon-color: #333;
+    --modal-bg: rgba(255, 255, 255, 0.95);
 }
+
 .dark-mode {
-    --text-color: #fff; --card-bg: rgba(0, 0, 0, 0.5);
-    --input-bg: rgba(0, 0, 0, 0.6); --shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+    --text-color: #fff; 
+    --card-bg: rgba(0, 0, 0, 0.5);
+    --input-bg: rgba(0, 0, 0, 0.6); 
+    --shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
     --icon-color: #fff;
+    --modal-bg: #222;
 }
 
 * { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; box-sizing: border-box; transition: background 0.3s, color 0.3s; -webkit-tap-highlight-color: transparent; }
@@ -18,12 +25,134 @@ body { min-height: 100dvh; color: var(--text-color); overflow: hidden; position:
 #video-light { opacity: 1; } #video-dark { opacity: 0; }
 body.dark-mode #video-light { opacity: 0; } body.dark-mode #video-dark { opacity: 1; }
 
-/* Nav */
-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; position: fixed; width: 100%; top: 0; z-index: 100; }
-.logo { font-size: 24px; font-weight: 600; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
-#theme-toggle { background: transparent; border: none; color: #fff; width: 50px; height: 50px; cursor: pointer; font-size: 28px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+/* --- NAVIGATION --- */
+nav { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 15px 5%; 
+    position: fixed; 
+    width: 100%; 
+    top: 0; 
+    z-index: 1000; /* High z-index ensures buttons are clickable */
+}
 
-/* Card */
+.logo { font-size: 24px; font-weight: 600; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+
+/* Theme Toggle */
+#theme-toggle { background: transparent; border: none; color: #fff; width: 40px; height: 40px; cursor: pointer; font-size: 24px; display: flex; align-items: center; justify-content: center; transition: transform 0.5s; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+
+/* --- AUTH BUTTONS (New) --- */
+.nav-buttons { display: flex; gap: 10px; align-items: center; }
+
+#login-btn, #logout-btn {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(4px);
+    color: white;
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+#login-btn:hover, #logout-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+#logout-btn {
+    background: rgba(255, 80, 80, 0.6); /* Red tint for logout */
+    border: 1px solid rgba(255, 80, 80, 0.8);
+}
+
+#user-email {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+    margin-right: 5px;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    display: none; /* Hidden on mobile by default */
+}
+
+@media (min-width: 600px) {
+    #user-email { display: inline-block; }
+}
+
+/* --- AUTH MODAL (New) --- */
+#auth-modal {
+    display: none; /* Toggled by JS */
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Dim background */
+    backdrop-filter: blur(8px);
+    z-index: 2000; /* Highest Layer */
+}
+
+.auth-box {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--modal-bg);
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    width: 90%;
+    max-width: 350px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    color: var(--text-color);
+}
+
+.auth-box h2 { margin-bottom: 20px; }
+
+.auth-box input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background: var(--input-bg);
+    color: var(--text-color);
+    outline: none;
+}
+
+.auth-box button#auth-action-btn {
+    width: 100%;
+    padding: 12px;
+    background: #444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.dark-mode .auth-box button#auth-action-btn { background: #666; }
+
+.auth-box p {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#close-modal {
+    position: absolute;
+    top: 10px; right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+
+/* --- WEATHER CARD (Existing) --- */
 .container { display: flex; justify-content: center; align-items: center; height: 100dvh; padding-top: 50px; position: relative; z-index: 10; }
 .card { width: 92%; max-width: 470px; background: var(--card-bg); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 25px; text-align: center; box-shadow: var(--shadow); color: var(--text-color); }
 
@@ -36,7 +165,7 @@ nav { display: flex; justify-content: space-between; align-items: center; paddin
 .weather h1 { font-size: 65px; font-weight: 500; }
 .city { font-size: 36px; font-weight: 400; text-transform: capitalize; }
 
-/* Visible Icons for details */
+/* Details */
 .details { display: flex; justify-content: space-between; margin-top: 30px; padding: 0 10px; }
 .col { display: flex; align-items: center; gap: 12px; text-align: left; }
 .col i { font-size: 32px; color: var(--icon-color); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); opacity: 1; }
@@ -49,4 +178,3 @@ nav { display: flex; justify-content: space-between; align-items: center; paddin
 
 .spinner { width: 35px; height: 35px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--text-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
