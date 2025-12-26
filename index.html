@@ -19,9 +19,15 @@
         <div class="auth-box">
             <button id="close-modal">&times;</button>
             <h2 id="modal-title">Login</h2>
+            
             <input type="email" id="auth-email" placeholder="Email Address">
             <input type="password" id="auth-pass" placeholder="Password">
             <button id="auth-action-btn">Submit</button>
+
+            <button id="google-btn">
+                <i class="fa-brands fa-google"></i> Sign in with Google
+            </button>
+
             <p id="toggle-auth-mode">Need an account? Sign Up</p>
         </div>
     </div>
@@ -77,10 +83,10 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // YOUR SPECIFIC KEYS
+        // Your Config
         const firebaseConfig = {
           apiKey: "AIzaSyAcJqbeZhbLlLS1ifimfUY_53ARMRCTEXg",
           authDomain: "atmos-weather-88090.firebaseapp.com",
@@ -96,7 +102,7 @@
             window.auth = getAuth(app);
             window.db = getFirestore(app);
             
-            // Expose functions globally for script.js
+            // Expose Standard Auth Functions
             window.createUser = createUserWithEmailAndPassword;
             window.signIn = signInWithEmailAndPassword;
             window.logout = signOut;
@@ -104,9 +110,12 @@
             window.dbSet = setDoc;
             window.dbGet = getDoc;
             window.dbDoc = doc;
+
+            // Expose Google Auth Functions
+            window.googleProvider = new GoogleAuthProvider();
+            window.googleSignIn = signInWithPopup;
             
-            console.log("✅ Firebase Connected");
-            // Signal to script.js that we are ready
+            console.log("✅ Firebase & Google Auth Ready");
             window.firebaseReady = true; 
         } catch (e) {
             console.error("❌ Firebase Failed:", e);
