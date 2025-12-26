@@ -82,18 +82,15 @@
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // --- PASTE YOUR FIREBASE CONFIG HERE ---
-        // It looks like: const firebaseConfig = { apiKey: "...", ... };
-        // COPY IT FROM FIREBASE CONSOLE AND PASTE BELOW
-        
+        // YOUR CONFIGURATION IS NOW INSERTED HERE
         const firebaseConfig = {
-             apiKey: "AIzaSyAcJqbeZhbLlLS1ifimfUY_53ARMRCTEXg",
-  authDomain: "atmos-weather-88090.firebaseapp.com",
-  projectId: "atmos-weather-88090",
-  storageBucket: "atmos-weather-88090.firebasestorage.app",
-  messagingSenderId: "447939124074",
-  appId: "1:447939124074:web:529eef0609712746ede313",
-  measurementId: "G-RCBT4LSRMZ"
+          apiKey: "AIzaSyAcJqbeZhbLlLS1ifimfUY_53ARMRCTEXg",
+          authDomain: "atmos-weather-88090.firebaseapp.com",
+          projectId: "atmos-weather-88090",
+          storageBucket: "atmos-weather-88090.firebasestorage.app",
+          messagingSenderId: "447939124074",
+          appId: "1:447939124074:web:529eef0609712746ede313",
+          measurementId: "G-RCBT4LSRMZ"
         };
 
         // Initialize Firebase
@@ -110,7 +107,7 @@
         window.dbGet = getDoc;
         window.dbDoc = doc;
         
-        console.log("Firebase Initialized");
+        console.log("Firebase Initialized Successfully");
     </script>
 
     <script src="script.js" defer></script>
