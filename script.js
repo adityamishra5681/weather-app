@@ -98,6 +98,7 @@ window.addEventListener('load', () => {
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const authActionBtn = document.getElementById('auth-action-btn');
+    const googleBtn = document.getElementById('google-btn'); // New Google Button
     const toggleAuth = document.getElementById('toggle-auth-mode');
     const closeModal = document.getElementById('close-modal');
     let isLoginMode = true;
@@ -116,6 +117,7 @@ window.addEventListener('load', () => {
         toggleAuth.textContent = isLoginMode ? "Need an account? Sign Up" : "Have an account? Login";
     });
 
+    // Email/Password Auth
     authActionBtn.addEventListener('click', async () => {
         const email = document.getElementById('auth-email').value;
         const pass = document.getElementById('auth-pass').value;
@@ -143,6 +145,27 @@ window.addEventListener('load', () => {
         }
     });
 
+    // Google Auth Logic (NEW)
+    googleBtn.addEventListener('click', async () => {
+        try {
+            const result = await window.googleSignIn(window.auth, window.googleProvider);
+            const user = result.user;
+
+            // Save user data merge:true prevents overwriting existing settings
+            await window.dbSet(window.dbDoc(window.db, "users", user.uid), {
+                email: user.email,
+                savedCity: "Mumbai",
+                theme: "light"
+            }, { merge: true });
+
+            alert(`Welcome, ${user.displayName}!`);
+            authModal.style.display = 'none';
+        } catch (error) {
+            console.error(error);
+            alert("Google Sign-In Error: " + error.message);
+        }
+    });
+
     // Wait for Firebase to act
     const checkAuth = setInterval(() => {
         if (window.userState) {
@@ -154,15 +177,17 @@ window.addEventListener('load', () => {
                     document.getElementById('user-email').textContent = user.email.split('@')[0];
                     
                     // Load Data
-                    const docSnap = await window.dbGet(window.dbDoc(window.db, "users", user.uid));
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        if (data.theme === 'dark') {
-                            document.body.classList.add('dark-mode');
-                            document.querySelector("#theme-toggle i").classList.replace("fa-moon", "fa-sun");
+                    try {
+                        const docSnap = await window.dbGet(window.dbDoc(window.db, "users", user.uid));
+                        if (docSnap.exists()) {
+                            const data = docSnap.data();
+                            if (data.theme === 'dark') {
+                                document.body.classList.add('dark-mode');
+                                document.querySelector("#theme-toggle i").classList.replace("fa-moon", "fa-sun");
+                            }
+                            checkWeather(data.savedCity || "Mumbai");
                         }
-                        checkWeather(data.savedCity || "Mumbai");
-                    }
+                    } catch (e) { console.error("Error loading user data", e); }
                 } else {
                     loginBtn.style.display = 'block';
                     logoutBtn.style.display = 'none';
