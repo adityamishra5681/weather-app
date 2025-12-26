@@ -13,6 +13,8 @@ const forecastSection = document.querySelector("#forecast-section");
 
 let lastCity = "Mumbai";
 
+// --- WEATHER FUNCTIONS ---
+
 async function checkWeather(city, lat = null, lon = null) {
     let url = lat ? `${weatherApi}&lat=${lat}&lon=${lon}&appid=${apiKey}` : `${weatherApi}&q=${city}&appid=${apiKey}`;
     let fUrl = lat ? `${forecastApi}&lat=${lat}&lon=${lon}&appid=${apiKey}` : `${forecastApi}&q=${city}&appid=${apiKey}`;
@@ -26,23 +28,26 @@ async function checkWeather(city, lat = null, lon = null) {
         const response = await fetch(url);
         if (!response.ok) throw new Error();
         const data = await response.json();
+        
         lastCity = data.name;
+        
+        // SAVE DATA TO FIREBASE (If logged in)
+        if (window.auth && window.auth.currentUser) {
+            saveUserPref(lastCity);
+        }
 
         document.querySelector(".city").innerHTML = data.name;
         document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
         document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
         document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
         
-        // Main high-res weather icon
         weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
 
-        // Forecast fetching
         const fResponse = await fetch(fUrl);
         const fData = await fResponse.json();
         const forecastEl = document.querySelector("#forecast");
         forecastEl.innerHTML = "";
 
-        // Filter one forecast per day (around noon)
         fData.list.filter(item => item.dt_txt.includes("12:00:00")).forEach(day => {
             const date = new Date(day.dt * 1000).toLocaleDateString("en", {weekday: 'short'});
             forecastEl.innerHTML += `
@@ -56,19 +61,30 @@ async function checkWeather(city, lat = null, lon = null) {
         loader.style.display = "none";
         weatherDiv.style.display = "block";
         forecastSection.style.display = "block";
-        searchBox.blur(); // Hide keyboard
+        searchBox.blur();
     } catch (err) {
         loader.style.display = "none";
         errorDiv.style.display = "block";
     }
 }
 
-// Pull to refresh mechanism for mobile
-let touchStart = 0;
-window.addEventListener('touchstart', (e) => { touchStart = e.targetTouches[0].pageY; }, {passive: true});
-window.addEventListener('touchend', (e) => {
-    if (touchStart < e.changedTouches[0].pageY - 150) checkWeather(lastCity);
-}, {passive: true});
+// --- FIREBASE HELPER FUNCTIONS ---
+
+async function saveUserPref(city) {
+    try {
+        const uid = window.auth.currentUser.uid;
+        // Save City AND Theme
+        await window.dbSet(window.dbDoc(window.db, "users", uid), {
+            savedCity: city,
+            theme: document.body.classList.contains("dark-mode") ? "dark" : "light"
+        }, { merge: true });
+        console.log("Saved to cloud");
+    } catch (e) {
+        console.error("Error saving:", e);
+    }
+}
+
+// --- EVENT LISTENERS ---
 
 searchBtn.addEventListener("click", () => checkWeather(searchBox.value));
 searchBox.addEventListener("keypress", (e) => { if(e.key === "Enter") checkWeather(searchBox.value); });
@@ -76,10 +92,109 @@ locationBtn.addEventListener("click", () => {
     navigator.geolocation.getCurrentPosition(p => checkWeather(null, p.coords.latitude, p.coords.longitude));
 });
 
+// Theme Toggle with Save
 document.querySelector("#theme-toggle").addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
     const icon = document.querySelector("#theme-toggle i");
-    icon.classList.toggle("fa-moon"); icon.classList.toggle("fa-sun");
+    
+    if(document.body.classList.contains("dark-mode")){
+        icon.classList.remove("fa-moon");
+        icon.classList.add("fa-sun");
+    } else {
+        icon.classList.remove("fa-sun");
+        icon.classList.add("fa-moon");
+    }
+
+    // Save preference if logged in
+    if(window.auth && window.auth.currentUser) {
+        saveUserPref(lastCity);
+    }
 });
 
 
+// --- AUTHENTICATION LOGIC ---
+
+// Wait for Firebase to load
+window.onload = () => {
+    const authModal = document.getElementById('auth-modal');
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const authActionBtn = document.getElementById('auth-action-btn');
+    const toggleAuth = document.getElementById('toggle-auth-mode');
+    let isLoginMode = true;
+
+    // Open/Close Modal
+    loginBtn.addEventListener('click', () => authModal.style.display = 'block');
+    document.getElementById('close-modal').addEventListener('click', () => authModal.style.display = 'none');
+
+    // Toggle Login vs Signup
+    toggleAuth.addEventListener('click', () => {
+        isLoginMode = !isLoginMode;
+        document.getElementById('modal-title').textContent = isLoginMode ? "Login" : "Sign Up";
+        toggleAuth.textContent = isLoginMode ? "Need an account? Sign Up" : "Have an account? Login";
+    });
+
+    // Handle Submit
+    authActionBtn.addEventListener('click', async () => {
+        const email = document.getElementById('auth-email').value;
+        const pass = document.getElementById('auth-pass').value;
+
+        try {
+            if (isLoginMode) {
+                await window.signIn(window.auth, email, pass);
+                alert("Logged in successfully!");
+            } else {
+                const cred = await window.createUser(window.auth, email, pass);
+                // Create initial DB entry
+                await window.dbSet(window.dbDoc(window.db, "users", cred.user.uid), {
+                    savedCity: "Mumbai",
+                    theme: "light"
+                });
+                alert("Account created!");
+            }
+            authModal.style.display = 'none';
+        } catch (error) {
+            alert("Error: " + error.message);
+        }
+    });
+
+    // Listen for User State Changes
+    window.userState(window.auth, async (user) => {
+        if (user) {
+            // User Logged In
+            loginBtn.style.display = 'none';
+            logoutBtn.style.display = 'block';
+            document.getElementById('user-email').textContent = user.email.split('@')[0];
+
+            // Load Data from Cloud
+            const docSnap = await window.dbGet(window.dbDoc(window.db, "users", user.uid));
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                
+                // Set Theme
+                if (data.theme === 'dark') {
+                    document.body.classList.add('dark-mode');
+                    document.querySelector("#theme-toggle i").classList.replace("fa-moon", "fa-sun");
+                } else {
+                    document.body.classList.remove('dark-mode');
+                    document.querySelector("#theme-toggle i").classList.replace("fa-sun", "fa-moon");
+                }
+                
+                // Load City
+                checkWeather(data.savedCity || "Mumbai");
+            }
+        } else {
+            // User Logged Out
+            loginBtn.style.display = 'block';
+            logoutBtn.style.display = 'none';
+            document.getElementById('user-email').textContent = "";
+            checkWeather("Mumbai"); // Default back to Mumbai
+        }
+    });
+
+    // Logout
+    logoutBtn.addEventListener('click', async () => {
+        await window.logout(window.auth);
+        location.reload();
+    });
+};
