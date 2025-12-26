@@ -1,7 +1,9 @@
+// --- CONFIGURATION ---
 const apiKey = "f86a031b7d83efe3ba8c9b41060f4baf";
 const weatherApi = "https://api.openweathermap.org/data/2.5/weather?units=metric";
 const forecastApi = "https://api.openweathermap.org/data/2.5/forecast?units=metric";
 
+// --- DOM ELEMENTS ---
 const searchBox = document.querySelector("#city-input");
 const searchBtn = document.querySelector("#search-btn");
 const locationBtn = document.querySelector("#location-btn");
@@ -13,7 +15,7 @@ const forecastSection = document.querySelector("#forecast-section");
 
 let lastCity = "Mumbai";
 
-// --- WEATHER FUNCTIONS ---
+// --- 1. WEATHER FUNCTIONS ---
 
 async function checkWeather(city, lat = null, lon = null) {
     let url = lat ? `${weatherApi}&lat=${lat}&lon=${lon}&appid=${apiKey}` : `${weatherApi}&q=${city}&appid=${apiKey}`;
@@ -30,8 +32,8 @@ async function checkWeather(city, lat = null, lon = null) {
         const data = await response.json();
         
         lastCity = data.name;
-        
-        // SAVE DATA TO FIREBASE (If logged in)
+
+        // SAVE TO FIREBASE IF LOGGED IN
         if (window.auth && window.auth.currentUser) {
             saveUserPref(lastCity);
         }
@@ -63,28 +65,26 @@ async function checkWeather(city, lat = null, lon = null) {
         forecastSection.style.display = "block";
         searchBox.blur();
     } catch (err) {
+        console.error(err);
         loader.style.display = "none";
         errorDiv.style.display = "block";
     }
 }
 
-// --- FIREBASE HELPER FUNCTIONS ---
-
 async function saveUserPref(city) {
+    if (!window.dbSet || !window.dbDoc || !window.db) return;
     try {
         const uid = window.auth.currentUser.uid;
-        // Save City AND Theme
         await window.dbSet(window.dbDoc(window.db, "users", uid), {
             savedCity: city,
             theme: document.body.classList.contains("dark-mode") ? "dark" : "light"
         }, { merge: true });
-        console.log("Saved to cloud");
     } catch (e) {
-        console.error("Error saving:", e);
+        console.error("Save Error:", e);
     }
 }
 
-// --- EVENT LISTENERS ---
+// --- 2. BASIC EVENT LISTENERS ---
 
 searchBtn.addEventListener("click", () => checkWeather(searchBox.value));
 searchBox.addEventListener("keypress", (e) => { if(e.key === "Enter") checkWeather(searchBox.value); });
@@ -92,7 +92,6 @@ locationBtn.addEventListener("click", () => {
     navigator.geolocation.getCurrentPosition(p => checkWeather(null, p.coords.latitude, p.coords.longitude));
 });
 
-// Theme Toggle with Save
 document.querySelector("#theme-toggle").addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
     const icon = document.querySelector("#theme-toggle i");
@@ -105,36 +104,47 @@ document.querySelector("#theme-toggle").addEventListener("click", () => {
         icon.classList.add("fa-moon");
     }
 
-    // Save preference if logged in
-    if(window.auth && window.auth.currentUser) {
-        saveUserPref(lastCity);
-    }
+    if(window.auth && window.auth.currentUser) saveUserPref(lastCity);
 });
 
+// --- 3. LOGIN / AUTHENTICATION LOGIC (CRITICAL PART) ---
 
-// --- AUTHENTICATION LOGIC ---
+// We use window.onload to ensure HTML is ready before we look for the buttons
+window.addEventListener('load', () => {
+    console.log("Page Loaded - Setting up Login Listeners...");
 
-// Wait for Firebase to load
-window.onload = () => {
     const authModal = document.getElementById('auth-modal');
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const authActionBtn = document.getElementById('auth-action-btn');
     const toggleAuth = document.getElementById('toggle-auth-mode');
+    const closeModal = document.getElementById('close-modal');
+
     let isLoginMode = true;
 
-    // Open/Close Modal
-    loginBtn.addEventListener('click', () => authModal.style.display = 'block');
-    document.getElementById('close-modal').addEventListener('click', () => authModal.style.display = 'none');
+    // DEBUG: Check if button exists
+    if (!loginBtn) {
+        console.error("CRITICAL ERROR: Login Button NOT found in HTML");
+        return;
+    }
 
-    // Toggle Login vs Signup
+    // 1. OPEN MODAL
+    loginBtn.addEventListener('click', () => {
+        console.log("Login Button Clicked!"); // Check Console for this
+        authModal.style.display = 'block';
+    });
+
+    // 2. CLOSE MODAL
+    closeModal.addEventListener('click', () => authModal.style.display = 'none');
+
+    // 3. TOGGLE SIGNUP/LOGIN
     toggleAuth.addEventListener('click', () => {
         isLoginMode = !isLoginMode;
         document.getElementById('modal-title').textContent = isLoginMode ? "Login" : "Sign Up";
         toggleAuth.textContent = isLoginMode ? "Need an account? Sign Up" : "Have an account? Login";
     });
 
-    // Handle Submit
+    // 4. SUBMIT FORM
     authActionBtn.addEventListener('click', async () => {
         const email = document.getElementById('auth-email').value;
         const pass = document.getElementById('auth-pass').value;
@@ -142,15 +152,15 @@ window.onload = () => {
         try {
             if (isLoginMode) {
                 await window.signIn(window.auth, email, pass);
-                alert("Logged in successfully!");
+                alert("Login Success!");
             } else {
                 const cred = await window.createUser(window.auth, email, pass);
-                // Create initial DB entry
+                // Initialize User Data
                 await window.dbSet(window.dbDoc(window.db, "users", cred.user.uid), {
                     savedCity: "Mumbai",
                     theme: "light"
                 });
-                alert("Account created!");
+                alert("Account Created!");
             }
             authModal.style.display = 'none';
         } catch (error) {
@@ -158,43 +168,23 @@ window.onload = () => {
         }
     });
 
-    // Listen for User State Changes
-    window.userState(window.auth, async (user) => {
-        if (user) {
-            // User Logged In
-            loginBtn.style.display = 'none';
-            logoutBtn.style.display = 'block';
-            document.getElementById('user-email').textContent = user.email.split('@')[0];
+    // 5. LISTEN FOR USER STATE (Login/Logout)
+    // We need to wait for Firebase to define 'window.userState'
+    const waitForFirebase = setInterval(() => {
+        if (window.userState) {
+            clearInterval(waitForFirebase);
+            window.userState(window.auth, async (user) => {
+                if (user) {
+                    loginBtn.style.display = 'none';
+                    logoutBtn.style.display = 'block';
+                    document.getElementById('user-email').textContent = user.email.split('@')[0];
 
-            // Load Data from Cloud
-            const docSnap = await window.dbGet(window.dbDoc(window.db, "users", user.uid));
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                
-                // Set Theme
-                if (data.theme === 'dark') {
-                    document.body.classList.add('dark-mode');
-                    document.querySelector("#theme-toggle i").classList.replace("fa-moon", "fa-sun");
-                } else {
-                    document.body.classList.remove('dark-mode');
-                    document.querySelector("#theme-toggle i").classList.replace("fa-sun", "fa-moon");
-                }
-                
-                // Load City
-                checkWeather(data.savedCity || "Mumbai");
-            }
-        } else {
-            // User Logged Out
-            loginBtn.style.display = 'block';
-            logoutBtn.style.display = 'none';
-            document.getElementById('user-email').textContent = "";
-            checkWeather("Mumbai"); // Default back to Mumbai
-        }
-    });
-
-    // Logout
-    logoutBtn.addEventListener('click', async () => {
-        await window.logout(window.auth);
-        location.reload();
-    });
-};
+                    // Load User Settings
+                    try {
+                        const docSnap = await window.dbGet(window.dbDoc(window.db, "users", user.uid));
+                        if (docSnap.exists()) {
+                            const data = docSnap.data();
+                            if (data.theme === 'dark' && !document.body.classList.contains('dark-mode')) {
+                                document.querySelector("#theme-toggle").click();
+                            }
+                            checkWeather(data.savedCity || "Mumbai");
