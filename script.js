@@ -12,7 +12,6 @@ const errorDiv = document.querySelector(".error");
 const forecastSection = document.querySelector("#forecast-section");
 let lastCity = "Mumbai";
 
-// --- WEATHER LOGIC ---
 async function checkWeather(city, lat = null, lon = null) {
     let url = lat ? `${weatherApi}&lat=${lat}&lon=${lon}&appid=${apiKey}` : `${weatherApi}&q=${city}&appid=${apiKey}`;
     let fUrl = lat ? `${forecastApi}&lat=${lat}&lon=${lon}&appid=${apiKey}` : `${forecastApi}&q=${city}&appid=${apiKey}`;
@@ -62,7 +61,6 @@ async function checkWeather(city, lat = null, lon = null) {
     }
 }
 
-// --- FIREBASE SAVE ---
 async function saveUserPref(city) {
     if (!window.db) return;
     try {
@@ -74,7 +72,6 @@ async function saveUserPref(city) {
     } catch (e) { console.error("Save Error:", e); }
 }
 
-// --- BUTTON LISTENERS ---
 searchBtn.addEventListener("click", () => checkWeather(searchBox.value));
 searchBox.addEventListener("keypress", (e) => { if(e.key === "Enter") checkWeather(searchBox.value); });
 locationBtn.addEventListener("click", () => {
@@ -92,7 +89,6 @@ document.querySelector("#theme-toggle").addEventListener("click", () => {
     if(window.auth && window.auth.currentUser) saveUserPref(lastCity);
 });
 
-// --- AUTHENTICATION ---
 window.addEventListener('load', () => {
     const authModal = document.getElementById('auth-modal');
     const loginBtn = document.getElementById('login-btn');
@@ -117,7 +113,6 @@ window.addEventListener('load', () => {
         toggleAuth.textContent = isLoginMode ? "Need an account? Sign Up" : "Have an account? Login";
     });
 
-    // Email/Password Auth
     authActionBtn.addEventListener('click', async () => {
         const email = document.getElementById('auth-email').value;
         const pass = document.getElementById('auth-pass').value;
@@ -145,7 +140,6 @@ window.addEventListener('load', () => {
         }
     });
 
-    // Google Auth Logic (NEW)
     googleBtn.addEventListener('click', async () => {
         try {
             const result = await window.googleSignIn(window.auth, window.googleProvider);
@@ -166,7 +160,6 @@ window.addEventListener('load', () => {
         }
     });
 
-    // Wait for Firebase to act
     const checkAuth = setInterval(() => {
         if (window.userState) {
             clearInterval(checkAuth);
@@ -176,7 +169,6 @@ window.addEventListener('load', () => {
                     logoutBtn.style.display = 'block';
                     document.getElementById('user-email').textContent = user.email.split('@')[0];
                     
-                    // Load Data
                     try {
                         const docSnap = await window.dbGet(window.dbDoc(window.db, "users", user.uid));
                         if (docSnap.exists()) {
@@ -202,3 +194,4 @@ window.addEventListener('load', () => {
         location.reload();
     });
 });
+
