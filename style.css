@@ -20,12 +20,35 @@
 body { min-height: 100dvh; color: var(--text-color); overflow: hidden; position: relative; background: #222; touch-action: pan-y; }
 
 /* Video Container */
-.video-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
-.video-container video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 1s ease; }
-#video-light { opacity: 1; } #video-dark { opacity: 0; }
-body.dark-mode #video-light { opacity: 0; } body.dark-mode #video-dark { opacity: 1; }
+/* Video Container - Sticks to background */
+.video-container { 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    z-index: -1; 
+    pointer-events: none; 
+    background: #000;
+}
 
-/* Navigation - High Z-Index */
+/* Both videos sit on top of each other */
+.video-container video { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    transition: opacity 0.8s ease-in-out; /* Smooth fade speed */
+}
+
+
+#video-light { opacity: 1; }
+#video-dark { opacity: 0; }
+
+body.dark-mode #video-light { opacity: 0; }
+body.dark-mode #video-dark { opacity: 1; }
 nav { 
     display: flex; justify-content: space-between; align-items: center; 
     padding: 15px 5%; position: fixed; width: 100%; top: 0; 
@@ -112,3 +135,4 @@ button { cursor: pointer; }
 .forecast-item { min-width: 70px; font-size: 13px; background: rgba(255,255,255,0.1); padding: 10px 5px; border-radius: 12px; }
 .spinner { width: 35px; height: 35px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--text-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
