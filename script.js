@@ -1,4 +1,4 @@
-const apiKey = "f86a031b7d83efe3ba8c9b41060f4baf"; // Keep your API Key secure in production
+const apiKey = "f86a031b7d83efe3ba8c9b41060f4baf";
 const weatherApi = "https://api.openweathermap.org/data/2.5/weather?units=metric";
 const forecastApi = "https://api.openweathermap.org/data/2.5/forecast?units=metric";
 
@@ -13,16 +13,18 @@ const errorDiv = document.querySelector(".error");
 const forecastSection = document.querySelector("#forecast-section");
 const themeToggle = document.querySelector("#theme-toggle");
 const themeIcon = document.querySelector("#theme-toggle i");
+const favBtn = document.querySelector("#fav-btn"); // The new Heart Button
+const citySuggestions = document.querySelector("#city-suggestions");
 
-// CHANGE 1: Initialize as empty string (No default city)
-let lastCity = "";
+// State Variables
+let currentCity = "";
+let savedCities = []; // Array to store multiple cities
 
-// --- 1. Weather Function (Data Only) ---
+// --- 1. Weather Function ---
 async function checkWeather(city, lat = null, lon = null) {
     let url = lat 
         ? `${weatherApi}&lat=${lat}&lon=${lon}&appid=${apiKey}` 
         : `${weatherApi}&q=${city}&appid=${apiKey}`;
-        
     let fUrl = lat 
         ? `${forecastApi}&lat=${lat}&lon=${lon}&appid=${apiKey}` 
         : `${forecastApi}&q=${city}&appid=${apiKey}`;
@@ -34,27 +36,22 @@ async function checkWeather(city, lat = null, lon = null) {
         forecastSection.style.display = "none";
 
         const response = await fetch(url);
-        
-        if (!response.ok) {
-            throw new Error("City not found");
-        }
+        if (!response.ok) throw new Error("City not found");
         
         const data = await response.json();
-        lastCity = data.name;
+        currentCity = data.name; // Store clean name (e.g., "London")
 
-        // Save preference if user is logged in
-        if (window.auth && window.auth.currentUser) saveUserPref(lastCity);
-
-        // Update UI Text
+        // Update UI
         document.querySelector(".city").innerHTML = data.name;
         document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
         document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
         document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
-        
-        // Update Weather Icon
         weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
 
-        // Fetch Forecast
+        // Update Heart Icon State
+        updateHeartIcon();
+
+        // Forecast
         const fResponse = await fetch(fUrl);
         const fData = await fResponse.json();
         updateForecastUI(fData);
@@ -73,10 +70,7 @@ async function checkWeather(city, lat = null, lon = null) {
 function updateForecastUI(fData) {
     const forecastEl = document.querySelector("#forecast");
     forecastEl.innerHTML = "";
-
-    // Filter for 12:00 PM forecasts
     const dailyData = fData.list.filter(item => item.dt_txt.includes("12:00:00"));
-
     dailyData.forEach(day => {
         const date = new Date(day.dt * 1000).toLocaleDateString("en", {weekday: 'short'});
         forecastEl.innerHTML += `
@@ -88,11 +82,74 @@ function updateForecastUI(fData) {
     });
 }
 
-// --- 2. Interactive Theme Toggle (Controls Video via CSS) ---
+// --- 2. Favorites Logic (Heart Button) ---
+function updateHeartIcon() {
+    // Check if the current city is in the saved list
+    if (savedCities.includes(currentCity)) {
+        favBtn.classList.remove("fa-regular");
+        favBtn.classList.add("fa-solid"); // Solid Heart
+        favBtn.style.color = "#ff4757";   // Red Color
+    } else {
+        favBtn.classList.remove("fa-solid");
+        favBtn.classList.add("fa-regular"); // Outline Heart
+        favBtn.style.color = "inherit";     // Default Color
+    }
+}
+
+favBtn.addEventListener("click", async () => {
+    if (!window.auth || !window.auth.currentUser) {
+        alert("Please login to save cities!");
+        return;
+    }
+
+    if (savedCities.includes(currentCity)) {
+        // Remove from list
+        savedCities = savedCities.filter(c => c !== currentCity);
+    } else {
+        // Add to list
+        savedCities.push(currentCity);
+    }
+
+    // Update UI immediately
+    updateHeartIcon();
+    updateSuggestions();
+
+    // Save to Firebase
+    try {
+        const uid = window.auth.currentUser.uid;
+        await window.dbSet(window.dbDoc(window.db, "users", uid), {
+            savedCities: savedCities
+        }, { merge: true });
+    } catch (e) {
+        console.error("Error saving favorites:", e);
+        alert("Failed to save. Check console.");
+    }
+});
+
+function updateSuggestions() {
+    // Clear existing options
+    citySuggestions.innerHTML = "";
+    // Add saved cities to the autocomplete list
+    savedCities.forEach(city => {
+        let option = document.createElement("option");
+        option.value = city;
+        option.innerText = "❤️ Saved"; // Adds a visual cue
+        citySuggestions.appendChild(option);
+    });
+    // Add standard major cities
+    const defaults = ["Mumbai", "Delhi", "New York", "London", "Tokyo"];
+    defaults.forEach(city => {
+        if (!savedCities.includes(city)) { // Don't duplicate
+            let option = document.createElement("option");
+            option.value = city;
+            citySuggestions.appendChild(option);
+        }
+    });
+}
+
+// --- 3. Theme Toggle ---
 themeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
-
-    // Icon Logic
     if (document.body.classList.contains("dark-mode")) {
         themeIcon.classList.remove("fa-moon");
         themeIcon.classList.add("fa-sun");
@@ -100,22 +157,14 @@ themeToggle.addEventListener("click", () => {
         themeIcon.classList.remove("fa-sun");
         themeIcon.classList.add("fa-moon");
     }
-
-    // Save Theme Preference
-    if(window.auth && window.auth.currentUser) saveUserPref(lastCity);
-});
-
-// --- 3. User Preferences (Firebase) ---
-async function saveUserPref(city) {
-    if (!window.db || !window.auth.currentUser) return;
-    try {
+    // Save preference
+    if(window.auth && window.auth.currentUser) {
         const uid = window.auth.currentUser.uid;
-        await window.dbSet(window.dbDoc(window.db, "users", uid), {
-            savedCity: city,
+        window.dbSet(window.dbDoc(window.db, "users", uid), {
             theme: document.body.classList.contains("dark-mode") ? "dark" : "light"
         }, { merge: true });
-    } catch (e) { console.error("Save Error:", e); }
-}
+    }
+});
 
 // --- 4. Event Listeners ---
 searchBtn.addEventListener("click", () => checkWeather(searchBox.value));
@@ -127,10 +176,10 @@ locationBtn.addEventListener("click", () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (p) => checkWeather(null, p.coords.latitude, p.coords.longitude),
-            () => alert("Geolocation denied or failed.")
+            () => alert("Geolocation denied.")
         );
     } else {
-        alert("Geolocation is not supported by your browser.");
+        alert("Geolocation not supported.");
     }
 });
 
@@ -145,17 +194,18 @@ window.addEventListener('load', () => {
     const closeModal = document.getElementById('close-modal');
     let isLoginMode = true;
 
-    // Modal Controls
+    // Open/Close Modal
     loginBtn.addEventListener('click', () => authModal.style.display = 'block');
     closeModal.addEventListener('click', () => authModal.style.display = 'none');
     
+    // Toggle Login/Signup Mode
     toggleAuth.addEventListener('click', () => {
         isLoginMode = !isLoginMode;
         document.getElementById('modal-title').textContent = isLoginMode ? "Login" : "Sign Up";
         toggleAuth.textContent = isLoginMode ? "Need an account? Sign Up" : "Have an account? Login";
     });
 
-    // Email/Pass Auth
+    // Email/Pass Auth Action
     authActionBtn.addEventListener('click', async () => {
         const email = document.getElementById('auth-email').value;
         const pass = document.getElementById('auth-pass').value;
@@ -171,17 +221,22 @@ window.addEventListener('load', () => {
                 alert("Welcome back!");
             } else {
                 const cred = await window.createUser(window.auth, email, pass);
+                // Initialize empty favorites for new user
                 await window.dbSet(window.dbDoc(window.db, "users", cred.user.uid), {
-                    savedCity: "", // No default city on signup
+                    savedCities: [],
                     theme: "light"
                 });
-                alert("Account Created!");
+                alert("Account Created Successfully!");
             }
+            // CLOSE DIALOG BOX (This runs for both Login and Signup)
             authModal.style.display = 'none';
+
         } catch (error) {
             alert(error.message);
         }
     });
+
+    // Google Auth
     googleBtn.addEventListener('click', async () => {
         googleBtn.disabled = true;
         googleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
@@ -190,7 +245,7 @@ window.addEventListener('load', () => {
             const result = await window.googleSignIn(window.auth, window.googleProvider);
             const user = result.user;
             
-            // Merge prevents overwriting existing theme settings
+            // Only update email, don't overwrite existing cities
             await window.dbSet(window.dbDoc(window.db, "users", user.uid), {
                 email: user.email,
             }, { merge: true });
@@ -198,25 +253,23 @@ window.addEventListener('load', () => {
             alert(`Welcome, ${user.displayName}!`);
             authModal.style.display = 'none';
         } catch (error) {
-            // Ignore the "popup closed by user" error, it's normal behavior
             if (error.code !== 'auth/popup-closed-by-user') {
                 console.error(error);
                 alert("Google Sign-In Error: " + error.message);
             }
         } finally {
-            // 2. Always re-enable the button, even if it failed
             googleBtn.disabled = false;
             googleBtn.innerHTML = '<i class="fa-brands fa-google"></i> Sign in with Google';
         }
     });
 
-    // Check Login State (Waits for Firebase to be ready)
+    // Check Login State & Load Data
     const checkAuth = setInterval(() => {
         if (window.userState) {
             clearInterval(checkAuth);
             window.userState(window.auth, async (user) => {
                 if (user) {
-                    // User is Logged In
+                    // Logged In
                     loginBtn.style.display = 'none';
                     logoutBtn.style.display = 'block';
                     document.getElementById('user-email').textContent = user.email ? user.email.split('@')[0] : "User";
@@ -226,31 +279,32 @@ window.addEventListener('load', () => {
                         if (docSnap.exists()) {
                             const data = docSnap.data();
                             
-                            // Apply Saved Theme
+                            // Load Theme
                             if (data.theme === 'dark') {
                                 document.body.classList.add('dark-mode');
                                 themeIcon.classList.remove("fa-moon");
                                 themeIcon.classList.add("fa-sun");
-                            } else {
-                                document.body.classList.remove('dark-mode');
-                                themeIcon.classList.remove("fa-sun");
-                                themeIcon.classList.add("fa-moon");
                             }
-                            
-                            // CHANGE 2: Only load weather if a saved city actually exists
-                            if (data.savedCity && data.savedCity !== "") {
-                                checkWeather(data.savedCity);
+
+                            // Load Saved Cities
+                            if (data.savedCities && Array.isArray(data.savedCities)) {
+                                savedCities = data.savedCities;
+                                updateSuggestions();
+                                
+                                // Load the LAST saved city if no city is currently shown
+                                if (savedCities.length > 0 && currentCity === "") {
+                                    checkWeather(savedCities[savedCities.length - 1]);
+                                }
                             }
                         }
                     } catch (e) { console.error("Error loading user data", e); }
                 } else {
-                    // User is Logged Out
+                    // Logged Out
                     loginBtn.style.display = 'block';
                     logoutBtn.style.display = 'none';
                     document.getElementById('user-email').textContent = "";
-                    
-                    // CHANGE 3: Removed the default checkWeather("Mumbai") call here.
-                    // The screen will simply remain empty until they search.
+                    savedCities = []; // Clear local favorites
+                    updateSuggestions();
                 }
             });
         }
@@ -261,4 +315,3 @@ window.addEventListener('load', () => {
         location.reload();
     });
 });
-
