@@ -13,15 +13,25 @@ const errorDiv = document.querySelector(".error");
 const forecastSection = document.querySelector("#forecast-section");
 const themeToggle = document.querySelector("#theme-toggle");
 const themeIcon = document.querySelector("#theme-toggle i");
-const favBtn = document.querySelector("#fav-btn"); // The new Heart Button
+const favBtn = document.querySelector("#fav-btn");
 const citySuggestions = document.querySelector("#city-suggestions");
 
-// State Variables
 let currentCity = "";
-let savedCities = []; // Array to store multiple cities
+let savedCities = []; 
+
+// --- Helper: Auto-Capitalize City Name ---
+function capitalizeCity(str) {
+    if (!str) return "";
+    return str.trim().split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+}
 
 // --- 1. Weather Function ---
 async function checkWeather(city, lat = null, lon = null) {
+    // Apply Capitalization Helper
+    if (city) city = capitalizeCity(city);
+
     let url = lat 
         ? `${weatherApi}&lat=${lat}&lon=${lon}&appid=${apiKey}` 
         : `${weatherApi}&q=${city}&appid=${apiKey}`;
@@ -39,7 +49,7 @@ async function checkWeather(city, lat = null, lon = null) {
         if (!response.ok) throw new Error("City not found");
         
         const data = await response.json();
-        currentCity = data.name; // Store clean name (e.g., "London")
+        currentCity = data.name; // Use API's official name
 
         // Update UI
         document.querySelector(".city").innerHTML = data.name;
@@ -48,10 +58,9 @@ async function checkWeather(city, lat = null, lon = null) {
         document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
         weatherIcon.src = `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
 
-        // Update Heart Icon State
         updateHeartIcon();
-
-        // Forecast
+        
+        // Fetch Forecast
         const fResponse = await fetch(fUrl);
         const fData = await fResponse.json();
         updateForecastUI(fData);
@@ -82,17 +91,16 @@ function updateForecastUI(fData) {
     });
 }
 
-// --- 2. Favorites Logic (Heart Button) ---
+// --- 2. Favorites Logic ---
 function updateHeartIcon() {
-    // Check if the current city is in the saved list
     if (savedCities.includes(currentCity)) {
         favBtn.classList.remove("fa-regular");
-        favBtn.classList.add("fa-solid"); // Solid Heart
-        favBtn.style.color = "#ff4757";   // Red Color
+        favBtn.classList.add("fa-solid"); 
+        favBtn.style.color = "#ff4757";   
     } else {
         favBtn.classList.remove("fa-solid");
-        favBtn.classList.add("fa-regular"); // Outline Heart
-        favBtn.style.color = "inherit";     // Default Color
+        favBtn.classList.add("fa-regular"); 
+        favBtn.style.color = "inherit";     
     }
 }
 
@@ -103,14 +111,11 @@ favBtn.addEventListener("click", async () => {
     }
 
     if (savedCities.includes(currentCity)) {
-        // Remove from list
         savedCities = savedCities.filter(c => c !== currentCity);
     } else {
-        // Add to list
         savedCities.push(currentCity);
     }
 
-    // Update UI immediately
     updateHeartIcon();
     updateSuggestions();
 
@@ -121,25 +126,25 @@ favBtn.addEventListener("click", async () => {
             savedCities: savedCities
         }, { merge: true });
     } catch (e) {
-        console.error("Error saving favorites:", e);
-        alert("Failed to save. Check console.");
+        console.error("Error saving:", e);
     }
 });
 
 function updateSuggestions() {
-    // Clear existing options
     citySuggestions.innerHTML = "";
-    // Add saved cities to the autocomplete list
+    
+    // Add Saved Cities
     savedCities.forEach(city => {
         let option = document.createElement("option");
         option.value = city;
-        option.innerText = "❤️ Saved"; // Adds a visual cue
+        option.label = "❤️ Saved"; 
         citySuggestions.appendChild(option);
     });
-    // Add standard major cities
-    const defaults = ["Mumbai", "Delhi", "New York", "London", "Tokyo"];
+
+    // Add Defaults
+    const defaults = ["Mumbai", "Delhi", "New York", "London", "Tokyo", "Paris", "Berlin"];
     defaults.forEach(city => {
-        if (!savedCities.includes(city)) { // Don't duplicate
+        if (!savedCities.includes(city)) {
             let option = document.createElement("option");
             option.value = city;
             citySuggestions.appendChild(option);
@@ -147,7 +152,33 @@ function updateSuggestions() {
     });
 }
 
-// --- 3. Theme Toggle ---
+// --- 3. Event Listeners ---
+searchBtn.addEventListener("click", () => checkWeather(searchBox.value));
+searchBox.addEventListener("keypress", (e) => { 
+    if(e.key === "Enter") checkWeather(searchBox.value); 
+});
+
+// NEW: Auto-search when selecting from the Dropdown list
+searchBox.addEventListener("input", () => {
+    const val = searchBox.value;
+    // If the typed value matches a saved city exactly, trigger search immediately
+    if (savedCities.includes(val) || ["Mumbai", "Delhi", "New York", "London", "Tokyo"].includes(val)) {
+        checkWeather(val);
+        searchBox.blur(); // Remove focus to hide keyboard on mobile
+    }
+});
+
+locationBtn.addEventListener("click", () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (p) => checkWeather(null, p.coords.latitude, p.coords.longitude),
+            () => alert("Geolocation denied.")
+        );
+    } else {
+        alert("Geolocation not supported.");
+    }
+});
+
 themeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
     if (document.body.classList.contains("dark-mode")) {
@@ -166,24 +197,7 @@ themeToggle.addEventListener("click", () => {
     }
 });
 
-// --- 4. Event Listeners ---
-searchBtn.addEventListener("click", () => checkWeather(searchBox.value));
-searchBox.addEventListener("keypress", (e) => { 
-    if(e.key === "Enter") checkWeather(searchBox.value); 
-});
-
-locationBtn.addEventListener("click", () => {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (p) => checkWeather(null, p.coords.latitude, p.coords.longitude),
-            () => alert("Geolocation denied.")
-        );
-    } else {
-        alert("Geolocation not supported.");
-    }
-});
-
-// --- 5. Auth & Initialization ---
+// --- 4. Auth & Initialization ---
 window.addEventListener('load', () => {
     const authModal = document.getElementById('auth-modal');
     const loginBtn = document.getElementById('login-btn');
@@ -194,24 +208,21 @@ window.addEventListener('load', () => {
     const closeModal = document.getElementById('close-modal');
     let isLoginMode = true;
 
-    // Open/Close Modal
     loginBtn.addEventListener('click', () => authModal.style.display = 'block');
     closeModal.addEventListener('click', () => authModal.style.display = 'none');
     
-    // Toggle Login/Signup Mode
     toggleAuth.addEventListener('click', () => {
         isLoginMode = !isLoginMode;
         document.getElementById('modal-title').textContent = isLoginMode ? "Login" : "Sign Up";
         toggleAuth.textContent = isLoginMode ? "Need an account? Sign Up" : "Have an account? Login";
     });
 
-    // Email/Pass Auth Action
     authActionBtn.addEventListener('click', async () => {
         const email = document.getElementById('auth-email').value;
         const pass = document.getElementById('auth-pass').value;
 
         if(!window.firebaseReady) {
-            alert("Firebase is loading... please wait.");
+            alert("Firebase is loading...");
             return;
         }
 
@@ -221,14 +232,14 @@ window.addEventListener('load', () => {
                 alert("Welcome back!");
             } else {
                 const cred = await window.createUser(window.auth, email, pass);
-                // Initialize empty favorites for new user
+                // Initialize new user
                 await window.dbSet(window.dbDoc(window.db, "users", cred.user.uid), {
                     savedCities: [],
                     theme: "light"
                 });
-                alert("Account Created Successfully!");
+                alert("Account Created!");
             }
-            // CLOSE DIALOG BOX (This runs for both Login and Signup)
+            // FORCE CLOSE MODAL
             authModal.style.display = 'none';
 
         } catch (error) {
@@ -236,7 +247,6 @@ window.addEventListener('load', () => {
         }
     });
 
-    // Google Auth
     googleBtn.addEventListener('click', async () => {
         googleBtn.disabled = true;
         googleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
@@ -245,17 +255,16 @@ window.addEventListener('load', () => {
             const result = await window.googleSignIn(window.auth, window.googleProvider);
             const user = result.user;
             
-            // Only update email, don't overwrite existing cities
             await window.dbSet(window.dbDoc(window.db, "users", user.uid), {
                 email: user.email,
             }, { merge: true });
 
             alert(`Welcome, ${user.displayName}!`);
-            authModal.style.display = 'none';
+            authModal.style.display = 'none'; // Force Close
         } catch (error) {
             if (error.code !== 'auth/popup-closed-by-user') {
                 console.error(error);
-                alert("Google Sign-In Error: " + error.message);
+                alert("Error: " + error.message);
             }
         } finally {
             googleBtn.disabled = false;
@@ -263,13 +272,12 @@ window.addEventListener('load', () => {
         }
     });
 
-    // Check Login State & Load Data
+    // Check Login State
     const checkAuth = setInterval(() => {
         if (window.userState) {
             clearInterval(checkAuth);
             window.userState(window.auth, async (user) => {
                 if (user) {
-                    // Logged In
                     loginBtn.style.display = 'none';
                     logoutBtn.style.display = 'block';
                     document.getElementById('user-email').textContent = user.email ? user.email.split('@')[0] : "User";
@@ -291,19 +299,18 @@ window.addEventListener('load', () => {
                                 savedCities = data.savedCities;
                                 updateSuggestions();
                                 
-                                // Load the LAST saved city if no city is currently shown
-                                if (savedCities.length > 0 && currentCity === "") {
-                                    checkWeather(savedCities[savedCities.length - 1]);
+                                // Load last viewed city OR first saved city
+                                if (currentCity === "" && savedCities.length > 0) {
+                                    checkWeather(savedCities[0]);
                                 }
                             }
                         }
                     } catch (e) { console.error("Error loading user data", e); }
                 } else {
-                    // Logged Out
                     loginBtn.style.display = 'block';
                     logoutBtn.style.display = 'none';
                     document.getElementById('user-email').textContent = "";
-                    savedCities = []; // Clear local favorites
+                    savedCities = [];
                     updateSuggestions();
                 }
             });
