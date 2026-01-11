@@ -11,8 +11,12 @@
 <body id="refresh-body">
 
     <div class="video-container">
-        <video autoplay muted loop playsinline id="video-light"><source src="morning.mp4" type="video/mp4"></video>
-        <video autoplay muted loop playsinline id="video-dark"><source src="night.mp4" type="video/mp4"></video>
+        <video autoplay muted loop playsinline id="video-light">
+            <source src="morning.mp4" type="video/mp4">
+        </video>
+        <video autoplay muted loop playsinline id="video-dark">
+            <source src="night.mp4" type="video/mp4">
+        </video>
     </div>
 
     <div id="auth-modal">
@@ -47,8 +51,12 @@
             <div class="search">
                 <input type="text" placeholder="Enter city..." spellcheck="false" id="city-input" list="city-suggestions">
                 <datalist id="city-suggestions">
-                    <option value="Mumbai"><option value="Delhi"><option value="Bangalore">
-                    <option value="London"><option value="New York"><option value="Tokyo">
+                    <option value="Mumbai"></option>
+                    <option value="Delhi"></option>
+                    <option value="Bangalore"></option>
+                    <option value="London"></option>
+                    <option value="New York"></option>
+                    <option value="Tokyo"></option>
                 </datalist>
                 <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
                 <button id="location-btn"><i class="fa-solid fa-location-crosshairs"></i></button>
@@ -86,7 +94,7 @@
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Your Config
+        // --- YOUR NEW ATMOS CONFIG ---
         const firebaseConfig = {
           apiKey: "AIzaSyAcJqbeZhbLlLS1ifimfUY_53ARMRCTEXg",
           authDomain: "atmos-weather-88090.firebaseapp.com",
@@ -98,31 +106,38 @@
         };
 
         try {
+            // Initialize
             const app = initializeApp(firebaseConfig);
-            window.auth = getAuth(app);
-            window.db = getFirestore(app);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
             
-            // Expose Standard Auth Functions
+            // --- EXPOSE TO WINDOW (The Bridge) ---
+            window.auth = auth;
+            window.db = db;
+            
+            // Auth Functions
             window.createUser = createUserWithEmailAndPassword;
             window.signIn = signInWithEmailAndPassword;
             window.logout = signOut;
             window.userState = onAuthStateChanged;
+            
+            // Database Functions
             window.dbSet = setDoc;
             window.dbGet = getDoc;
             window.dbDoc = doc;
 
-            // Expose Google Auth Functions
+            // Google Auth Functions
             window.googleProvider = new GoogleAuthProvider();
             window.googleSignIn = signInWithPopup;
             
-            console.log("✅ Firebase & Google Auth Ready");
+            console.log("✅ Atmos Weather Firebase Ready");
             window.firebaseReady = true; 
         } catch (e) {
-            console.error("❌ Firebase Failed:", e);
+            console.error("❌ Firebase Failed to Load:", e);
+            alert("Database Connection Error. Check Console.");
         }
     </script>
 
     <script src="script.js" defer></script>
 </body>
 </html>
-
