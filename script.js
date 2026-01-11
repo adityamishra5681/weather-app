@@ -182,9 +182,10 @@ window.addEventListener('load', () => {
             alert(error.message);
         }
     });
-
-    // Google Auth
     googleBtn.addEventListener('click', async () => {
+        googleBtn.disabled = true;
+        googleBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in...';
+
         try {
             const result = await window.googleSignIn(window.auth, window.googleProvider);
             const user = result.user;
@@ -197,8 +198,15 @@ window.addEventListener('load', () => {
             alert(`Welcome, ${user.displayName}!`);
             authModal.style.display = 'none';
         } catch (error) {
-            console.error(error);
-            alert("Google Sign-In Error: " + error.message);
+            // Ignore the "popup closed by user" error, it's normal behavior
+            if (error.code !== 'auth/popup-closed-by-user') {
+                console.error(error);
+                alert("Google Sign-In Error: " + error.message);
+            }
+        } finally {
+            // 2. Always re-enable the button, even if it failed
+            googleBtn.disabled = false;
+            googleBtn.innerHTML = '<i class="fa-brands fa-google"></i> Sign in with Google';
         }
     });
 
@@ -253,3 +261,4 @@ window.addEventListener('load', () => {
         location.reload();
     });
 });
+
