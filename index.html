@@ -51,13 +51,7 @@
             <div class="search">
                 <input type="text" placeholder="Enter city..." spellcheck="false" id="city-input" list="city-suggestions">
                 <datalist id="city-suggestions">
-                    <option value="Mumbai"></option>
-                    <option value="Delhi"></option>
-                    <option value="Bangalore"></option>
-                    <option value="London"></option>
-                    <option value="New York"></option>
-                    <option value="Tokyo"></option>
-                </datalist>
+                    </datalist>
                 <button id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
                 <button id="location-btn"><i class="fa-solid fa-location-crosshairs"></i></button>
             </div>
@@ -68,10 +62,11 @@
             <div class="weather" style="display: none;">
                 <img src="" class="weather-icon" alt="Weather Icon">
                 <h1 class="temp">--°c</h1>
-                <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-    <h2 class="city">City</h2>
-    <i id="fav-btn" class="fa-regular fa-heart" style="cursor: pointer; font-size: 1.5rem;" title="Save City"></i>
-</div>
+                
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px;">
+                    <h2 class="city">City</h2>
+                    <i id="fav-btn" class="fa-regular fa-heart" style="cursor: pointer; font-size: 1.5rem;" title="Save City"></i>
+                </div>
                 
                 <div class="details">
                     <div class="col">
@@ -97,51 +92,41 @@
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // --- UPDATED CONFIGURATION ---
         const firebaseConfig = {
-  apiKey: "AIzaSyAm5cZfnsn-H1GC-XSIh9b-SY3AeidkHic",
-  authDomain: "weather-app-14b1b.firebaseapp.com",
-  projectId: "weather-app-14b1b",
-  storageBucket: "weather-app-14b1b.firebasestorage.app",
-  messagingSenderId: "253973957194",
-  appId: "1:253973957194:web:33e20637dc463e3eafb4b3",
-  measurementId: "G-7Z10SXWB7T"
-};
+          apiKey: "AIzaSyAm5cZfnsn-H1GC-XSIh9b-SY3AeidkHic",
+          authDomain: "weather-app-14b1b.firebaseapp.com",
+          projectId: "weather-app-14b1b",
+          storageBucket: "weather-app-14b1b.firebasestorage.app",
+          messagingSenderId: "253973957194",
+          appId: "1:253973957194:web:33e20637dc463e3eafb4b3",
+          measurementId: "G-7Z10SXWB7T"
+        };
 
         try {
-            // Initialize
             const app = initializeApp(firebaseConfig);
             const auth = getAuth(app);
             const db = getFirestore(app);
             
-            // --- EXPOSE TO WINDOW (The Bridge) ---
+            // Bridge to Main Script
             window.auth = auth;
             window.db = db;
-            
-            // Auth Functions
             window.createUser = createUserWithEmailAndPassword;
             window.signIn = signInWithEmailAndPassword;
             window.logout = signOut;
             window.userState = onAuthStateChanged;
-            
-            // Database Functions
             window.dbSet = setDoc;
             window.dbGet = getDoc;
             window.dbDoc = doc;
-
-            // Google Auth Functions
             window.googleProvider = new GoogleAuthProvider();
             window.googleSignIn = signInWithPopup;
             
-            console.log("✅ Atmos Weather Firebase Ready");
             window.firebaseReady = true; 
         } catch (e) {
-            console.error("❌ Firebase Failed to Load:", e);
-            alert("Database Connection Error. Check Console.");
+            console.error("Firebase Error:", e);
         }
     </script>
 
     <script src="script.js" defer></script>
 </body>
 </html>
-
-
