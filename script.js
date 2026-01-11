@@ -14,7 +14,7 @@ const forecastSection = document.querySelector("#forecast-section");
 const themeToggle = document.querySelector("#theme-toggle");
 const themeIcon = document.querySelector("#theme-toggle i");
 
-let lastCity = "Mumbai";
+let lastCity = "";
 
 // --- 1. Weather Function (Data Only) ---
 async function checkWeather(city, lat = null, lon = null) {
@@ -229,7 +229,10 @@ window.addEventListener('load', () => {
                             }
                             
                             // Load Saved City
-                            checkWeather(data.savedCity || "Mumbai");
+                            // Only load weather if the user actually has a saved city
+if (data.savedCity) {
+    checkWeather(data.savedCity);
+}
                         }
                     } catch (e) { console.error("Error loading user data", e); }
                 } else {
@@ -237,7 +240,7 @@ window.addEventListener('load', () => {
                     loginBtn.style.display = 'block';
                     logoutBtn.style.display = 'none';
                     document.getElementById('user-email').textContent = "";
-                    checkWeather("Mumbai"); // Default city
+                    //checkWeather("Mumbai"); // Default city
                 }
             });
         }
@@ -248,3 +251,4 @@ window.addEventListener('load', () => {
         location.reload();
     });
 });
+
