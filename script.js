@@ -40,6 +40,7 @@ async function checkWeather(city, lat = null, lon = null) {
         : `${forecastApi}&q=${city}&appid=${apiKey}`;
 
     try {
+        // Show Loader, Hide others
         loader.style.display = "block";
         weatherDiv.style.display = "none";
         errorDiv.style.display = "none";
@@ -49,7 +50,7 @@ async function checkWeather(city, lat = null, lon = null) {
         if (!response.ok) throw new Error("City not found");
         
         const data = await response.json();
-        currentCity = data.name; // Use API's official name
+        currentCity = data.name; 
 
         // Update UI
         document.querySelector(".city").innerHTML = data.name;
@@ -65,14 +66,16 @@ async function checkWeather(city, lat = null, lon = null) {
         const fData = await fResponse.json();
         updateForecastUI(fData);
 
-        loader.style.display = "none";
+        // Show Weather UI
         weatherDiv.style.display = "block";
         forecastSection.style.display = "block";
 
     } catch (err) {
         console.error(err);
-        loader.style.display = "none";
         errorDiv.style.display = "block";
+    } finally {
+        // THIS IS THE FIX: Loader will ALWAYS hide, even if there is an error
+        loader.style.display = "none";
     }
 }
 
@@ -158,15 +161,8 @@ searchBox.addEventListener("keypress", (e) => {
     if(e.key === "Enter") checkWeather(searchBox.value); 
 });
 
-// NEW: Auto-search when selecting from the Dropdown list
-searchBox.addEventListener("input", () => {
-    const val = searchBox.value;
-    // If the typed value matches a saved city exactly, trigger search immediately
-    if (savedCities.includes(val) || ["Mumbai", "Delhi", "New York", "London", "Tokyo"].includes(val)) {
-        checkWeather(val);
-        searchBox.blur(); // Remove focus to hide keyboard on mobile
-    }
-});
+// REMOVED: The "input" event listener that was causing the freeze.
+// We now rely on pressing Enter or clicking the button only.
 
 locationBtn.addEventListener("click", () => {
     if (navigator.geolocation) {
@@ -232,14 +228,12 @@ window.addEventListener('load', () => {
                 alert("Welcome back!");
             } else {
                 const cred = await window.createUser(window.auth, email, pass);
-                // Initialize new user
                 await window.dbSet(window.dbDoc(window.db, "users", cred.user.uid), {
                     savedCities: [],
                     theme: "light"
                 });
                 alert("Account Created!");
             }
-            // FORCE CLOSE MODAL
             authModal.style.display = 'none';
 
         } catch (error) {
@@ -287,19 +281,16 @@ window.addEventListener('load', () => {
                         if (docSnap.exists()) {
                             const data = docSnap.data();
                             
-                            // Load Theme
                             if (data.theme === 'dark') {
                                 document.body.classList.add('dark-mode');
                                 themeIcon.classList.remove("fa-moon");
                                 themeIcon.classList.add("fa-sun");
                             }
 
-                            // Load Saved Cities
                             if (data.savedCities && Array.isArray(data.savedCities)) {
                                 savedCities = data.savedCities;
                                 updateSuggestions();
                                 
-                                // Load last viewed city OR first saved city
                                 if (currentCity === "" && savedCities.length > 0) {
                                     checkWeather(savedCities[0]);
                                 }
