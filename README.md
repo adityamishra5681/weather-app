@@ -2,7 +2,7 @@
 
 A dynamic weather dashboard that allows users to check real-time weather conditions for any city in the world. This project fetches live data using the OpenWeatherMap API.
 
-**🔴 Live Demo:** http://aditya5681.dpdns.org
+**🔴 Live Demo:** https://aditya5681.dpdns.org
 
 ## 🚀 Features
 * **Real-time Data:** Fetches up-to-date temperature, humidity, and wind speed.
