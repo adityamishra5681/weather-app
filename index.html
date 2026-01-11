@@ -68,7 +68,10 @@
             <div class="weather" style="display: none;">
                 <img src="" class="weather-icon" alt="Weather Icon">
                 <h1 class="temp">--°c</h1>
-                <h2 class="city">City</h2>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+    <h2 class="city">City</h2>
+    <i id="fav-btn" class="fa-regular fa-heart" style="cursor: pointer; font-size: 1.5rem;" title="Save City"></i>
+</div>
                 
                 <div class="details">
                     <div class="col">
@@ -140,4 +143,5 @@
     <script src="script.js" defer></script>
 </body>
 </html>
+
 
