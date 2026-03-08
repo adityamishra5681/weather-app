@@ -29,7 +29,6 @@ function capitalizeCity(str) {
 
 // --- 1. Weather Function ---
 async function checkWeather(city, lat = null, lon = null) {
-    // Apply Capitalization Helper
     if (city) city = capitalizeCity(city);
 
     let url = lat 
@@ -40,7 +39,6 @@ async function checkWeather(city, lat = null, lon = null) {
         : `${forecastApi}&q=${city}&appid=${apiKey}`;
 
     try {
-        // Show Loader, Hide others
         loader.style.display = "block";
         weatherDiv.style.display = "none";
         errorDiv.style.display = "none";
@@ -52,7 +50,6 @@ async function checkWeather(city, lat = null, lon = null) {
         const data = await response.json();
         currentCity = data.name; 
 
-        // Update UI
         document.querySelector(".city").innerHTML = data.name;
         document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°c";
         document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
@@ -61,12 +58,10 @@ async function checkWeather(city, lat = null, lon = null) {
 
         updateHeartIcon();
         
-        // Fetch Forecast
         const fResponse = await fetch(fUrl);
         const fData = await fResponse.json();
         updateForecastUI(fData);
 
-        // Show Weather UI
         weatherDiv.style.display = "block";
         forecastSection.style.display = "block";
 
@@ -74,7 +69,6 @@ async function checkWeather(city, lat = null, lon = null) {
         console.error(err);
         errorDiv.style.display = "block";
     } finally {
-        // THIS IS THE FIX: Loader will ALWAYS hide, even if there is an error
         loader.style.display = "none";
     }
 }
@@ -122,7 +116,6 @@ favBtn.addEventListener("click", async () => {
     updateHeartIcon();
     updateSuggestions();
 
-    // Save to Firebase
     try {
         const uid = window.auth.currentUser.uid;
         await window.dbSet(window.dbDoc(window.db, "users", uid), {
@@ -136,7 +129,6 @@ favBtn.addEventListener("click", async () => {
 function updateSuggestions() {
     citySuggestions.innerHTML = "";
     
-    // Add Saved Cities
     savedCities.forEach(city => {
         let option = document.createElement("option");
         option.value = city;
@@ -144,7 +136,6 @@ function updateSuggestions() {
         citySuggestions.appendChild(option);
     });
 
-    // Add Defaults
     const defaults = ["Mumbai", "Delhi", "New York", "London", "Tokyo", "Paris", "Berlin"];
     defaults.forEach(city => {
         if (!savedCities.includes(city)) {
@@ -160,9 +151,6 @@ searchBtn.addEventListener("click", () => checkWeather(searchBox.value));
 searchBox.addEventListener("keypress", (e) => { 
     if(e.key === "Enter") checkWeather(searchBox.value); 
 });
-
-// REMOVED: The "input" event listener that was causing the freeze.
-// We now rely on pressing Enter or clicking the button only.
 
 locationBtn.addEventListener("click", () => {
     if (navigator.geolocation) {
@@ -184,7 +172,7 @@ themeToggle.addEventListener("click", () => {
         themeIcon.classList.remove("fa-sun");
         themeIcon.classList.add("fa-moon");
     }
-    // Save preference
+    
     if(window.auth && window.auth.currentUser) {
         const uid = window.auth.currentUser.uid;
         window.dbSet(window.dbDoc(window.db, "users", uid), {
@@ -254,7 +242,7 @@ window.addEventListener('load', () => {
             }, { merge: true });
 
             alert(`Welcome, ${user.displayName}!`);
-            authModal.style.display = 'none'; // Force Close
+            authModal.style.display = 'none'; 
         } catch (error) {
             if (error.code !== 'auth/popup-closed-by-user') {
                 console.error(error);
@@ -266,7 +254,6 @@ window.addEventListener('load', () => {
         }
     });
 
-    // Check Login State
     const checkAuth = setInterval(() => {
         if (window.userState) {
             clearInterval(checkAuth);
