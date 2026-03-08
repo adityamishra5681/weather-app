@@ -6,20 +6,7 @@
     --icon-color: #333;
     --modal-bg: rgba(255, 255, 255, 0.95);
 }
-/* Ensure the search section is always on top */
-.search {
-    position: relative;
-    z-index: 100; /* High number keeps it clickable */
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
 
-/* Ensure the loader doesn't block clicks when hidden */
-#loader {
-    pointer-events: none; /* Allows clicks to pass through if it accidentally stays visible */
-    /* ... existing loader styles ... */
-}
 .dark-mode {
     --text-color: #fff; 
     --card-bg: rgba(0, 0, 0, 0.5);
@@ -33,7 +20,6 @@
 body { min-height: 100dvh; color: var(--text-color); overflow: hidden; position: relative; background: #222; touch-action: pan-y; }
 
 /* Video Container */
-/* Video Container - Sticks to background */
 .video-container { 
     position: fixed; 
     top: 0; 
@@ -45,7 +31,6 @@ body { min-height: 100dvh; color: var(--text-color); overflow: hidden; position:
     background: #000;
 }
 
-/* Both videos sit on top of each other */
 .video-container video { 
     position: absolute; 
     top: 0; 
@@ -53,15 +38,14 @@ body { min-height: 100dvh; color: var(--text-color); overflow: hidden; position:
     width: 100%; 
     height: 100%; 
     object-fit: cover; 
-    transition: opacity 0.8s ease-in-out; /* Smooth fade speed */
+    transition: opacity 0.8s ease-in-out; 
 }
-
 
 #video-light { opacity: 1; }
 #video-dark { opacity: 0; }
-
 body.dark-mode #video-light { opacity: 0; }
 body.dark-mode #video-dark { opacity: 1; }
+
 nav { 
     display: flex; justify-content: space-between; align-items: center; 
     padding: 15px 5%; position: fixed; width: 100%; top: 0; 
@@ -69,10 +53,8 @@ nav {
 }
 
 .logo { font-size: 24px; font-weight: 600; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.4); }
-
 .nav-buttons { display: flex; gap: 10px; align-items: center; }
 
-/* Buttons */
 button { cursor: pointer; }
 
 #login-btn, #logout-btn {
@@ -85,11 +67,8 @@ button { cursor: pointer; }
     font-size: 14px;
     font-weight: 500;
 }
-
 #logout-btn { background: rgba(255, 80, 80, 0.6); border-color: rgba(255, 80, 80, 0.8); }
-
 #theme-toggle { background: transparent; border: none; color: #fff; width: 40px; height: 40px; font-size: 24px; display: flex; align-items: center; justify-content: center; }
-
 #user-email { font-size: 13px; color: white; font-weight: 500; display: none; }
 @media (min-width: 600px) { #user-email { display: inline-block; } }
 
@@ -120,24 +99,76 @@ button { cursor: pointer; }
 
 .auth-box input { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 8px; background: var(--input-bg); color: var(--text-color); outline: none; }
 .auth-box button#auth-action-btn { width: 100%; padding: 12px; background: #333; color: white; border: none; border-radius: 8px; font-size: 16px; margin-top: 10px; }
-
-/* GOOGLE BUTTON STYLE */
 .auth-box button#google-btn { width: 100%; padding: 12px; background: #db4437; color: white; border: none; border-radius: 8px; font-size: 16px; margin-top: 10px; }
-
 .auth-box p { margin-top: 15px; font-size: 13px; color: #007bff; cursor: pointer; text-decoration: underline; }
-
 #close-modal { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; color: var(--text-color); }
 
-/* Main Card */
+/* Main Container */
 .container { display: flex; justify-content: center; align-items: center; height: 100dvh; padding-top: 50px; position: relative; z-index: 10; pointer-events: none; }
-.card { width: 92%; max-width: 470px; background: var(--card-bg); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; padding: 25px; text-align: center; box-shadow: var(--shadow); color: var(--text-color); pointer-events: auto; }
 
-.search { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+/* 3D Card Setup */
+.card { 
+    width: 92%; 
+    max-width: 470px; 
+    background: var(--card-bg); 
+    backdrop-filter: blur(18px); 
+    -webkit-backdrop-filter: blur(18px); 
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+    border-radius: 20px; 
+    padding: 25px; 
+    text-align: center; 
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+    color: var(--text-color); 
+    pointer-events: auto; 
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+/* 3D Translation for Inner Elements */
+.search, .weather h1, .city, .details, .forecast-container {
+    transform: translateZ(40px);
+}
+
+.search { position: relative; z-index: 100; display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
 .search input { border: 0; outline: 0; background: var(--input-bg); color: var(--text-color); padding: 0 20px; height: 45px; border-radius: 30px; flex: 1; font-size: 16px; font-weight: 500; }
-.search button { border: 0; background: #fff; color: #000; border-radius: 50%; width: 45px; height: 45px; font-size: 16px; }
+.search button, #location-btn { border: 0; background: #fff; color: #000; border-radius: 50%; width: 45px; height: 45px; font-size: 16px; }
 
-/* Details */
-.weather-icon { width: 130px; margin: 10px 0; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2)); }
+/* 3D Push Buttons */
+.search button, #location-btn {
+    box-shadow: 0 4px 0 #ccc, 0 5px 10px rgba(0,0,0,0.2);
+    transition: all 0.1s;
+    transform: translateZ(40px);
+}
+.search button:active, #location-btn:active {
+    transform: translateZ(40px) translateY(4px);
+    box-shadow: 0 0 0 #ccc, 0 2px 5px rgba(0,0,0,0.2);
+}
+.dark-mode .search button, .dark-mode #location-btn {
+    box-shadow: 0 4px 0 #555, 0 5px 10px rgba(0,0,0,0.5);
+}
+.dark-mode .search button:active, .dark-mode #location-btn:active {
+    box-shadow: 0 0 0 #555, 0 2px 5px rgba(0,0,0,0.5);
+}
+
+#loader { pointer-events: none; }
+.spinner { width: 35px; height: 35px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--text-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Floating 3D Weather Icon */
+.weather-icon { 
+    width: 130px; 
+    margin: 10px 0; 
+    transform: translateZ(80px); 
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateZ(80px) translateY(0px); }
+    50% { transform: translateZ(80px) translateY(-15px); }
+    100% { transform: translateZ(80px) translateY(0px); }
+}
+
 .weather h1 { font-size: 65px; font-weight: 500; }
 .city { font-size: 36px; font-weight: 400; text-transform: capitalize; }
 .details { display: flex; justify-content: space-between; margin-top: 30px; padding: 0 10px; }
@@ -146,8 +177,3 @@ button { cursor: pointer; }
 .separator { border: none; border-top: 1px solid rgba(255,255,255,0.25); margin: 20px 0; }
 .forecast-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; justify-content: space-between; }
 .forecast-item { min-width: 70px; font-size: 13px; background: rgba(255,255,255,0.1); padding: 10px 5px; border-radius: 12px; }
-.spinner { width: 35px; height: 35px; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--text-color); border-radius: 50%; animation: spin 1s linear infinite; margin: 20px auto; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-
-
